@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Romaneio OCR de Entregas</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f4f6;color:#111827;font-family:Arial,sans-serif}
+.container{max-width:1450px;margin:auto;padding:18px}.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:18px;box-shadow:0 2px 10px #0001}
+h1{margin:0 0 6px}.muted{color:#6b7280}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+button,.file-label{border:0;border-radius:8px;padding:12px 16px;font-weight:700;cursor:pointer;background:#2563eb;color:#fff}
+.secondary{background:#e5e7eb;color:#111827!important}.danger{background:#dc2626}.success{background:#15803d}
+input[type=file]{display:none}.progress{height:9px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-top:14px}.bar{height:100%;width:0;background:#2563eb;transition:.2s}
+.status{margin-top:10px;color:#4b5563}.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.thumb{width:90px;height:90px;object-fit:cover;border-radius:8px;border:1px solid #ddd}
+.summary{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.box{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:10px 16px}.box strong{display:block;font-size:20px}
+.table-wrap{overflow:auto}table{width:100%;min-width:1250px;border-collapse:collapse}th,td{padding:7px;border-bottom:1px solid #e5e7eb;text-align:left}th{background:#111827;color:#fff;position:sticky;top:0;z-index:1}
+td input{width:100%;min-width:70px;padding:7px;border:1px solid #d1d5db;border-radius:5px}.idcell{font-weight:bold;text-align:center;width:55px;background:#f9fafb}
+.conf-high{border-color:#86efac!important;background:#f0fdf4}.conf-medium{border-color:#facc15!important;background:#fefce8}.conf-low{border-color:#fca5a5!important;background:#fef2f2}
+.legend{font-size:12px;color:#6b7280;margin-top:8px}.hidden{display:none}
+textarea{width:100%;min-height:180px;padding:10px;font-family:monospace;border:1px solid #d1d5db;border-radius:8px}
+@media(max-width:600px){.container{padding:10px}.card{padding:14px}h1{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="card">
+<h1>Romaneio OCR de Entregas</h1>
+<p class="muted">Capture ou selecione as telas das entregas. O sistema faz OCR, interpreta os endereços, cria o ID sequencial e prepara o Excel.</p>
+
+<div class="actions">
+<label class="file-label" for="images">📷 Selecionar capturas</label>
+<input id="images" type="file" accept="image/*" multiple>
+<button onclick="processarImagens()">🔎 Ler entregas</button>
+<button class="secondary" onclick="carregarExemplo()">🧪 Testar exemplo</button>
+<button id="excelBtn" class="success" onclick="exportarExcel()" disabled>📊 Gerar Excel</button>
+<button class="secondary" onclick="limparTudo()">🗑️ Limpar</button>
+</div>
+
+<div id="thumbs" class="thumbs"></div>
+<div class="progress"><div id="bar" class="bar"></div></div>
+<div id="status" class="status">Nenhuma imagem processada.</div>
+</div>
+
+<div class="card">
+<h2>Romaneio</h2>
+<div class="summary">
+<div class="box">Entregas<strong id="total">0</strong></div>
+<div class="box">Alta confiança<strong id="alta">0</strong></div>
+<div class="box">Revisão<strong id="revisao">0</strong></div>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead><tr>
+<th>ID</th><th>Pedido</th><th>Nome</th><th>Rua</th><th>Número</th><th>Complemento</th>
+<th>Bairro</th><th>Cidade</th><th>UF</th><th>CEP</th><th>Data/Hora</th><th></th>
+</tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+<p class="legend">Verde = alta confiança · amarelo = média · vermelho = baixa. Os campos podem ser corrigidos antes de gerar o Excel.</p>
+</div>
+
+<div class="card">
+<details>
+<summary><strong>Texto OCR bruto</strong></summary>
+<br><pre id="raw" style="white-space:pre-wrap">Ainda não há texto.</pre>
+</details>
+</div>
+
+</div>
+
+<script>
+const UF_LIST=['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
+
+const KNOWN_CITIES=[
+'São Paulo','Guarulhos','Osasco','Santo André','São Bernardo do Campo','São Caetano do Sul',
+'Diadema','Mauá','Barueri','Carapicuíba','Cotia','Taboão da Serra','Rio de Janeiro',
+'Belo Horizonte','Brasília','Salvador','Fortaleza','Curitiba','Manaus','Recife','Porto Alegre','Campinas'
+];
+
+const KNOWN_NOISE_LABELS=['MIAMI'];
+
+const STREET_PREFIXES=['Rua','R','R.','Av','Av.','Avenida','Alameda','Travessa','Estrada','Rodovia','Praça','Al'];
+
+let resultados=[];
+
+document.getElementById('images').addEventListener('change',e=>{
+ const box=document.getElementById('thumbs');box.innerHTML='';
+ [...e.target.files].forEach(f=>{
+  const img=document.createElement('img');img.className='thumb';img.src=URL.createObjectURL(f);box.appendChild(img);
+ });
+ document.getElementById('status').textContent=`${e.target.files.length} imagem(ns) selecionada(s).`;
+});
+
+/* Normalização leve: corrige apenas padrões seguros e preserva o texto original quando há dúvida. */
+function normalizarTexto(s){
+ return s.replace(/[“”"]/g,'').replace(/\s+/g,' ').trim();
+}
+
+/* Distância de Levenshtein para comparar erros de OCR com cidades/bairros/ruas conhecidas. */
+function levenshtein(a,b){
+ a=a.toLowerCase();b=b.toLowerCase();
+ const dp=Array.from({length:a.length+1},()=>Array(b.length+1).fill(0));
+ for(let i=0;i<=a.length;i++)dp[i][0]=i;
+ for(let j=0;j<=b.length;j++)dp[0][j]=j;
+ for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)
+  dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+ return dp[a.length][b.length];
+}
+
+function similaridade(a,b){
+ const max=Math.max(a.length,b.length);
+ return max?1-levenshtein(a,b)/max:1;
+}
+
+/* Tenta corrigir cidades somente quando a semelhança é alta. */
+function corrigirCidade(texto){
+ let melhor=null;
+ for(const cidade of KNOWN_CITIES){
+  const score=similaridade(texto,cidade);
+  if(!melhor||score>melhor.score)melhor={cidade,score};
+ }
+ return melhor;
+}
+
+function extractOrder(block){
+ const result={pedido:'',nome:'',rua:'',numero:'',complemento:'',bairro:'',cidade:'',uf:'',cep:'',dataHora:'',confianca:{}};
+ let lines=block.map(l=>normalizarTexto(l)).filter(Boolean);
+
+ if(lines.length){
+  const m=lines[0].match(/^\d{11,18}$/);
+  result.pedido=m?lines[0]:'';
+  result.confianca.pedido=m?'alta':'baixa';
+  lines=lines.slice(1);
+ }
+
+ lines=lines.filter(l=>{
+  const m=l.match(/\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}/);
+  if(m){result.dataHora=m[0];result.confianca.dataHora='alta';return false}
+  return true;
+ });
+
+ if(lines.length){
+  const c=lines[0];
+  const ok=/^[A-Za-zÀ-ÿ\s.']+$/.test(c)&&c.split(/\s+/).length>=2;
+  result.nome=c;result.confianca.nome=ok?'alta':'media';lines=lines.slice(1);
+ }
+
+ let endereco=lines.join(' ').replace(/\s+/g,' ').trim();
+
+ const cep=endereco.match(/\b(\d{5})-?(\d{3})\b/);
+ if(cep){result.cep=cep[1]+cep[2];result.confianca.cep='alta';endereco=endereco.replace(cep[0],' ')}
+ else result.confianca.cep='baixa';
+
+ let ufIndex=-1;
+ for(const uf of UF_LIST){
+  const m=endereco.match(new RegExp(`\\b${uf}\\b`));
+  if(m){result.uf=uf;ufIndex=m.index;break}
+ }
+ result.confianca.uf=ufIndex>=0?'alta':'baixa';
+
+ let esquerda=ufIndex>=0?endereco.slice(0,ufIndex):endereco;
+ let direita=ufIndex>=0?endereco.slice(ufIndex+result.uf.length):'';
+
+ const nm=direita.trim().match(/^(\d{1,5})\b/);
+ if(nm){
+  result.numero=nm[1];result.confianca.numero='alta';
+  result.complemento=direita.slice(nm[0].length).trim();
+  result.confianca.complemento=result.complemento?'alta':'media';
+ }else{
+  result.numero='';result.confianca.numero='baixa';
+  result.complemento=direita.trim();result.confianca.complemento=result.complemento?'media':'alta';
+ }
+
+ for(const n of KNOWN_NOISE_LABELS) esquerda=esquerda.replace(new RegExp(`\\b${n}\\b`,'gi'),' ');
+ esquerda=esquerda.replace(/\s+/g,' ').trim();
+
+ let cidadeEncontrada=null;
+ for(const cidade of KNOWN_CITIES){
+  const idx=esquerda.toLowerCase().lastIndexOf(cidade.toLowerCase());
+  if(idx!==-1){cidadeEncontrada={nome:cidade,idx,score:1};break}
+ }
+
+ /* Se não achou a cidade exatamente, tenta o último trecho como cidade candidata. */
+ if(!cidadeEncontrada){
+  const palavras=esquerda.split(/\s+/).filter(Boolean);
+  for(let n=2;n<=4;n++){
+   if(palavras.length<n)continue;
+   const candidato=palavras.slice(-n).join(' ');
+   const melhor=corrigirCidade(candidato);
+   if(melhor && melhor.score>=0.86){
+    const idx=esquerda.toLowerCase().lastIndexOf(candidato.toLowerCase());
+    cidadeEncontrada={nome:melhor.cidade,idx,score:melhor.score,original:candidato};
+    break;
+   }
+  }
+ }
+
+ if(cidadeEncontrada){
+  result.cidade=cidadeEncontrada.nome;
+  result.confianca.cidade=cidadeEncontrada.score===1?'alta':'media';
+
+  const antes=esquerda.slice(0,cidadeEncontrada.idx).trim();
+  const palavras=antes.split(/\s+/).filter(Boolean);
+
+  /*
+   * Heurística de bairro:
+   * - mantém 1 a 3 palavras para permitir bairros compostos;
+   * - tenta preservar o prefixo da rua;
+   * - quando há prefixo de rua, usa a posição do prefixo como referência.
+   */
+  let prefixIndex=palavras.findIndex(p=>STREET_PREFIXES.some(x=>p.toLowerCase()===x.toLowerCase()));
+  if(prefixIndex<0)prefixIndex=palavras.findIndex(p=>/^rua\.?$/i.test(p)||/^av\.?$/i.test(p));
+
+  if(prefixIndex>=0 && palavras.length-prefixIndex>=3){
+   result.rua=palavras.slice(prefixIndex,-1).join(' ');
+   result.bairro=palavras[palavras.length-1];
+   result.confianca.bairro='media';
+  }else if(palavras.length>=3){
+   result.bairro=palavras.slice(-2).join(' ');
+   result.rua=palavras.slice(0,-2).join(' ');
+   if(!result.rua){result.rua=palavras.slice(0,-1).join(' ');result.bairro=palavras[palavras.length-1]}
+   result.confianca.bairro='media';
+  }else if(palavras.length>=2){
+   result.rua=palavras.slice(0,-1).join(' ');
+   result.bairro=palavras[palavras.length-1];
+   result.confianca.bairro='media';
+  }else{
+   result.rua=antes;result.confianca.bairro='baixa';
+  }
+ }else{
+  result.confianca.cidade='baixa';result.confianca.bairro='baixa';result.rua=esquerda;
+ }
+
+ result.confianca.rua=STREET_PREFIXES.some(p=>new RegExp(`^${p.replace('.','\\\\.')}\\b`,'i').test(result.rua))?'alta':'media';
+
+ return result;
+}
+
+function separarPedidos(texto){
+ const linhas=texto.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+ const blocos=[];let atual=[];
+ for(const linha of linhas){
+  if(/^\d{11,18}$/.test(linha)&&atual.length){blocos.push(atual);atual=[]}
+  atual.push(linha);
+ }
+ if(atual.length)blocos.push(atual);
+ return blocos;
+}
+
+async function processarImagens(){
+ const files=document.getElementById('images').files;
+ if(!files.length){alert('Selecione pelo menos uma captura.');return}
+
+ const status=document.getElementById('status'),bar=document.getElementById('bar'),raw=document.getElementById('raw');
+ let texto='';
+
+ try{
+  for(let i=0;i<files.length;i++){
+   status.textContent=`Lendo imagem ${i+1} de ${files.length}...`;
+   const res=await Tesseract.recognize(files[i],'por',{logger:m=>{
+    if(m.status==='recognizing text')status.textContent=`Imagem ${i+1}/${files.length}: OCR ${Math.round((m.progress||0)*100)}%`;
+   }});
+   texto+=`\n${res.data.text}\n`;
+   bar.style.width=`${Math.round((i+1)/files.length*100)}%`;
+  }
+
+  raw.textContent=texto.trim()||'OCR não encontrou texto.';
+  resultados=separarPedidos(texto).map(extractOrder).filter(x=>x.pedido||x.nome);
+  renumerar();
+  mostrarResultados();
+  status.textContent=`Concluído: ${resultados.length} entrega(s) encontrada(s).`;
+ }catch(e){
+  console.error(e);status.textContent='Erro no OCR: '+e.message;
+ }
+}
+
+function renumerar(){
+ resultados.forEach((x,i)=>x.id=i+1);
+}
+
+function classeConf(c){return c==='alta'?'conf-high':c==='media'?'conf-medium':'conf-low'}
+
+function mostrarResultados(){
+ const tbody=document.getElementById('tbody');tbody.innerHTML='';
+ let alta=0,revisao=0;
+
+ resultados.forEach((x,idx)=>{
+  const tr=document.createElement('tr');
+  const id=document.createElement('td');id.className='idcell';id.textContent=x.id;tr.appendChild(id);
+
+  ['pedido','nome','rua','numero','complemento','bairro','cidade','uf','cep','dataHora'].forEach(c=>{
+   const td=document.createElement('td'),input=document.createElement('input');
+   input.value=x[c]||'';
+   input.className=classeConf(x.confianca[c]);
+   input.title='Confiança: '+(x.confianca[c]||'não definida');
+   input.oninput=()=>x[c]=input.value;
+   td.appendChild(input);tr.appendChild(td);
+  });
+
+  const action=document.createElement('td');
+  const del=document.createElement('button');del.textContent='Excluir';del.className='danger';
+  del.onclick=()=>{resultados.splice(idx,1);renumerar();mostrarResultados()};
+  action.appendChild(del);tr.appendChild(action);
+  tbody.appendChild(tr);
+
+  const baixa=Object.values(x.confianca).some(v=>v==='baixa');
+  baixa?revisao++:alta++;
+ });
+
+ document.getElementById('total').textContent=resultados.length;
+ document.getElementById('alta').textContent=alta;
+ document.getElementById('revisao').textContent=revisao;
+ document.getElementById('excelBtn').disabled=!resultados.length;
+}
+
+function exportarExcel(){
+ if(!resultados.length)return;
+
+ const rows=resultados.map(x=>({
+  ID:x.id,
+  Pedido:x.pedido,
+  Nome:x.nome,
+  Rua:x.rua,
+  Número:x.numero,
+  Complemento:x.complemento,
+  Bairro:x.bairro,
+  Cidade:x.cidade,
+  UF:x.uf,
+  CEP:x.cep,
+  'Data/Hora':x.dataHora
+ }));
+
+ const ws=XLSX.utils.json_to_sheet(rows);
+ ws['!cols']=[
+  {wch:6},{wch:20},{wch:28},{wch:30},{wch:10},{wch:22},
+  {wch:24},{wch:22},{wch:7},{wch:12},{wch:20}
+ ];
+ const wb=XLSX.utils.book_new();
+ XLSX.utils.book_append_sheet(wb,ws,'Romaneio');
+ XLSX.writeFile(wb,'romaneio_entregas.xlsx');
+}
+
+function carregarExemplo(){
+ const exemplo=`999881830322368
+Natasha Santana
+Rua atugasmin medici filho MIAMI
+PAULISTA São Paulo SP 11 Casa
+04952020
+2026-08-27 07:38:16
+
+999881803870288
+Júlio Almeida
+Rua Bazílio Ramos MIAMI PAULISTA
+São Paulo SP 14 casa
+04952040
+2026-08-27 07:38:16
+
+999881781535938
+Daniela Teixeira dos santos
+Rua Basílio Ramos MIAMI PAULISTA
+São Paulo SP 16 Casa 16 A
+04952040
+2026-08-27 07:38:16`;
+
+ document.getElementById('raw').textContent=exemplo;
+ resultados=separarPedidos(exemplo).map(extractOrder);
+ renumerar();mostrarResultados();
+ document.getElementById('status').textContent='Exemplo carregado. IDs de 1 a '+resultados.length+' criados.';
+}
+
+function limparTudo(){
+ resultados=[];document.getElementById('tbody').innerHTML='';
+ document.getElementById('raw').textContent='Ainda não há texto.';
+ document.getElementById('thumbs').innerHTML='';
+ document.getElementById('bar').style.width='0%';
+ document.getElementById('status').textContent='Tudo limpo.';
+ document.getElementById('total').textContent='0';
+ document.getElementById('alta').textContent='0';
+ document.getElementById('revisao').textContent='0';
+ document.getElementById('excelBtn').disabled=true;
+ document.getElementById('images').value='';
+}
+
+carregarExemplo();
+</script>
+</body>
+</html>
