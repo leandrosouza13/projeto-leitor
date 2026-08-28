@@ -2,7 +2,6 @@
 <html lang="pt-BR">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -14,20 +13,20 @@
 <style>
 
 *{
-    box-sizing:border-box;
+    box-sizing:border-box
 }
 
 body{
     margin:0;
     background:#f3f4f6;
     color:#111827;
-    font-family:Arial,sans-serif;
+    font-family:Arial,sans-serif
 }
 
 .container{
-    max-width:1500px;
+    max-width:1450px;
     margin:auto;
-    padding:18px;
+    padding:18px
 }
 
 .card{
@@ -35,26 +34,22 @@ body{
     border-radius:12px;
     padding:20px;
     margin-bottom:18px;
-    box-shadow:0 2px 10px #0001;
+    box-shadow:0 2px 10px #0001
 }
 
 h1{
-    margin:0 0 6px;
-}
-
-h2{
-    margin-top:0;
+    margin:0 0 6px
 }
 
 .muted{
-    color:#6b7280;
+    color:#6b7280
 }
 
 .actions{
     display:flex;
     flex-wrap:wrap;
     gap:10px;
-    margin-top:16px;
+    margin-top:16px
 }
 
 button,
@@ -65,29 +60,24 @@ button,
     font-weight:700;
     cursor:pointer;
     background:#2563eb;
-    color:#fff;
-}
-
-button:disabled{
-    opacity:.5;
-    cursor:not-allowed;
+    color:#fff
 }
 
 .secondary{
     background:#e5e7eb;
-    color:#111827!important;
+    color:#111827!important
 }
 
 .danger{
-    background:#dc2626;
+    background:#dc2626
 }
 
 .success{
-    background:#15803d;
+    background:#15803d
 }
 
 input[type=file]{
-    display:none;
+    display:none
 }
 
 .progress{
@@ -95,26 +85,26 @@ input[type=file]{
     background:#e5e7eb;
     border-radius:99px;
     overflow:hidden;
-    margin-top:14px;
+    margin-top:14px
 }
 
 .bar{
     height:100%;
     width:0;
     background:#2563eb;
-    transition:.2s;
+    transition:.2s
 }
 
 .status{
     margin-top:10px;
-    color:#4b5563;
+    color:#4b5563
 }
 
 .thumbs{
     display:flex;
     gap:8px;
     flex-wrap:wrap;
-    margin-top:12px;
+    margin-top:12px
 }
 
 .thumb{
@@ -122,43 +112,43 @@ input[type=file]{
     height:90px;
     object-fit:cover;
     border-radius:8px;
-    border:1px solid #ddd;
+    border:1px solid #ddd
 }
 
 .summary{
     display:flex;
     gap:10px;
     flex-wrap:wrap;
-    margin:15px 0;
+    margin:15px 0
 }
 
 .box{
     background:#f9fafb;
     border:1px solid #e5e7eb;
     border-radius:8px;
-    padding:10px 16px;
+    padding:10px 16px
 }
 
 .box strong{
     display:block;
-    font-size:20px;
+    font-size:20px
 }
 
 .table-wrap{
-    overflow:auto;
+    overflow:auto
 }
 
 table{
     width:100%;
-    min-width:1200px;
-    border-collapse:collapse;
+    min-width:1250px;
+    border-collapse:collapse
 }
 
 th,
 td{
     padding:7px;
     border-bottom:1px solid #e5e7eb;
-    text-align:left;
+    text-align:left
 }
 
 th{
@@ -166,64 +156,67 @@ th{
     color:#fff;
     position:sticky;
     top:0;
-    z-index:1;
+    z-index:1
 }
 
 td input{
     width:100%;
     min-width:70px;
-    padding:8px;
+    padding:7px;
     border:1px solid #d1d5db;
-    border-radius:5px;
+    border-radius:5px
 }
 
 .idcell{
     font-weight:bold;
     text-align:center;
     width:55px;
-    background:#f9fafb;
+    background:#f9fafb
 }
 
 .conf-high{
     border-color:#86efac!important;
-    background:#f0fdf4;
+    background:#f0fdf4
 }
 
 .conf-medium{
     border-color:#facc15!important;
-    background:#fefce8;
+    background:#fefce8
 }
 
 .conf-low{
     border-color:#fca5a5!important;
-    background:#fef2f2;
+    background:#fef2f2
 }
 
 .legend{
     font-size:12px;
     color:#6b7280;
-    margin-top:8px;
+    margin-top:8px
 }
 
-pre{
-    white-space:pre-wrap;
-    word-break:break-word;
+textarea{
+    width:100%;
+    min-height:180px;
+    padding:10px;
+    font-family:monospace;
+    border:1px solid #d1d5db;
+    border-radius:8px
 }
 
 @media(max-width:600px){
 
     .container{
-        padding:10px;
+        padding:10px
     }
 
     .card{
-        padding:14px;
+        padding:14px
     }
 
     h1{
-        font-size:23px;
+        font-size:23px
     }
-
 }
 
 </style>
@@ -234,19 +227,13 @@ pre{
 
 <div class="container">
 
-
-<!-- =====================================================
-     CABEÇALHO
-===================================================== -->
-
 <div class="card">
 
 <h1>Romaneio OCR de Entregas</h1>
 
 <p class="muted">
-Leia as capturas do aplicativo. O sistema procura somente
-nome e endereço e ignora pedidos, telefone, navegação,
-WhatsApp, registro de anomalia, assinar e demais elementos.
+Capture ou selecione as telas das entregas. O sistema identifica nome e endereço,
+ignora elementos da interface e organiza tudo para o Excel.
 </p>
 
 <div class="actions">
@@ -298,15 +285,11 @@ WhatsApp, registro de anomalia, assinar e demais elementos.
 </div>
 
 <div id="status" class="status">
-Nenhuma imagem processada.
+    Nenhuma imagem processada.
 </div>
 
 </div>
 
-
-<!-- =====================================================
-     ROMANEIO
-===================================================== -->
 
 <div class="card">
 
@@ -331,6 +314,7 @@ Revisão
 
 </div>
 
+
 <div class="table-wrap">
 
 <table>
@@ -340,6 +324,7 @@ Revisão
 <tr>
 
 <th>ID</th>
+<th>Pedido</th>
 <th>Nome</th>
 <th>Rua</th>
 <th>Número</th>
@@ -348,6 +333,7 @@ Revisão
 <th>Cidade</th>
 <th>UF</th>
 <th>CEP</th>
+<th>Data/Hora</th>
 <th></th>
 
 </tr>
@@ -362,15 +348,11 @@ Revisão
 
 <p class="legend">
 Verde = alta confiança · amarelo = média · vermelho = baixa.
-Revise os campos amarelos/vermelhos antes de gerar o Excel.
+Os campos podem ser corrigidos antes de gerar o Excel.
 </p>
 
 </div>
 
-
-<!-- =====================================================
-     OCR BRUTO
-===================================================== -->
 
 <div class="card">
 
@@ -382,14 +364,16 @@ Revise os campos amarelos/vermelhos antes de gerar o Excel.
 
 <br>
 
-<pre id="raw">
+<pre
+    id="raw"
+    style="white-space:pre-wrap"
+>
 Ainda não há texto.
 </pre>
 
 </details>
 
 </div>
-
 
 </div>
 
@@ -402,52 +386,16 @@ Ainda não há texto.
 ========================================================= */
 
 
-/*
-   Prefixos que identificam uma rua.
-*/
-
-const STREET_PREFIXES = [
-
-    'Rua',
-    'R',
-    'R.',
-    'Avenida',
-    'Av',
-    'Av.',
-    'Alameda',
-    'Travessa',
-    'Estrada',
-    'Rodovia',
-    'Praça',
-    'Praca',
-    'Al',
-    'Viela',
-    'Largo'
-
-];
-
-
-/*
-   UFs brasileiras.
-*/
-
 const UF_LIST = [
-
-    'AC','AL','AP','AM','BA','CE','DF',
-    'ES','GO','MA','MT','MS','MG','PA',
-    'PB','PR','PE','PI','RJ','RN','RS',
-    'RO','RR','SC','SP','SE','TO'
-
+    'AC','AL','AP','AM','BA','CE','DF','ES','GO','MA',
+    'MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN',
+    'RS','RO','RR','SC','SP','SE','TO'
 ];
 
-
-/*
-   Cidades mais comuns.
-
-   Você pode aumentar essa lista depois.
-*/
 
 const KNOWN_CITIES = [
+
+    /* Grande São Paulo */
 
     'São Paulo',
     'Guarulhos',
@@ -464,14 +412,46 @@ const KNOWN_CITIES = [
     'Embu das Artes',
     'Itapevi',
     'Jandira',
+    'Santana de Parnaíba',
+    'Caieiras',
     'Franco da Rocha',
     'Francisco Morato',
-    'Caieiras',
+    'Mairiporã',
     'Poá',
     'Suzano',
-    'Mogi das Cruzes',
     'Itaquaquecetuba',
     'Ferraz de Vasconcelos',
+    'Mogi das Cruzes',
+    'Arujá',
+    'Guararema',
+
+    /* Interior */
+
+    'Campinas',
+    'Jundiaí',
+    'Sorocaba',
+    'Piracicaba',
+    'Americana',
+    'Indaiatuba',
+    'Limeira',
+    'Rio Claro',
+    'Paulínia',
+    'Hortolândia',
+    'Sumaré',
+    'Valinhos',
+    'Vinhedo',
+    'Bragança Paulista',
+    'Atibaia',
+    'São José dos Campos',
+    'Taubaté',
+    'Jacareí',
+    'Santos',
+    'São Vicente',
+    'Praia Grande',
+    'Guarujá',
+
+    /* Outras capitais */
+
     'Rio de Janeiro',
     'Belo Horizonte',
     'Brasília',
@@ -480,131 +460,106 @@ const KNOWN_CITIES = [
     'Curitiba',
     'Manaus',
     'Recife',
-    'Porto Alegre',
-    'Campinas',
-    'Santos',
-    'Sorocaba',
-    'Ribeirão Preto',
-    'São José dos Campos',
-    'Jundiaí'
-
+    'Porto Alegre'
 ];
 
 
 /*
-   Bairros conhecidos.
-
-   IMPORTANTE:
-   Essa lista pode crescer conforme você for
-   utilizando o sistema.
-*/
-
-const KNOWN_NEIGHBORHOODS = [
-
-    'MIAMI PAULISTA',
-
-    'Centro',
-    'Vila Mariana',
-    'Vila Madalena',
-    'Moema',
-    'Ipiranga',
-    'Tatuapé',
-    'Santana',
-    'Penha',
-    'Lapa',
-    'Butantã',
-    'Pinheiros',
-    'Liberdade',
-    'Sé',
-    'Aclimação',
-    'Cambuci',
-    'Saúde',
-    'Jabaquara',
-    'Campo Limpo',
-    'Capão Redondo',
-    'Santo Amaro',
-    'Morumbi',
-    'Itaim Bibi',
-    'Brooklin',
-    'Vila Prudente',
-    'Vila Formosa',
-    'Vila Matilde',
-    'Artur Alvim',
-    'Cidade Líder',
-    'São Mateus',
-    'Sapopemba',
-    'Guaianases',
-    'Itaquera',
-    'Ermelino Matarazzo',
-    'Pirituba',
-    'Freguesia do Ó',
-    'Casa Verde',
-    'Limão',
-    'Tremembé',
-    'Jaçanã'
-
-];
-
-
-/*
-   Palavras que indicam complemento.
-*/
-
-const COMPLEMENT_KEYWORDS = [
-
-    'casa',
-    'apto',
-    'apartamento',
-    'apart',
-    'bloco',
-    'fundos',
-    'frente',
-    'sobrado',
-    'loja',
-    'sala',
-    'conjunto',
-    'cj',
-    'casa térrea',
-    'casa 1',
-    'casa 2',
-    'térreo',
-    'terreo',
-    'andar',
-    'edifício',
-    'edificio',
-    'torre',
-    'condomínio',
-    'condominio'
-
-];
-
-
-/*
-   Elementos que queremos ignorar.
+    Palavras que aparecem na interface do aplicativo
+    e não pertencem ao endereço.
 */
 
 const NOISE_WORDS = [
 
-    'telefone',
+    'MIAMI',
+
     'navegação',
     'navegacao',
-    'nav',
+
+    'telefone',
+
     'assinar',
-    'registro de anomalia',
+
+    'registro',
     'anomalia',
+
     'whatsapp',
+
     'procurar',
-    'roteirização',
-    'roteirizacao',
+
+    'pacote',
     'problemático',
     'problematico',
-    'pacote problemático',
-    'recibo de transferência',
+
+    'entrega',
+    'pendente',
+
+    'recebido',
     'transferência',
     'transferencia',
-    'últimos 7 dias',
-    'filtro de data'
 
+    'assinado',
+
+    'últimos',
+    'ultimos',
+
+    'dias',
+
+    'filtro',
+    'data',
+
+    'roteirização',
+    'roteirizacao'
+];
+
+
+/*
+    Prefixos que normalmente identificam uma rua.
+*/
+
+const STREET_PREFIXES = [
+
+    'Rua',
+    'R',
+    'R.',
+    'Avenida',
+    'Av',
+    'Av.',
+    'Alameda',
+    'Travessa',
+    'Tv',
+    'Estrada',
+    'Rodovia',
+    'Praça',
+    'Praca',
+    'Largo',
+    'Via'
+];
+
+
+/*
+    Palavras que normalmente indicam complemento.
+*/
+
+const COMPLEMENT_PREFIXES = [
+
+    'Casa',
+    'Apto',
+    'Apartamento',
+    'Ap',
+    'Bloco',
+    'Bl',
+    'Fundos',
+    'Sala',
+    'Andar',
+    'Torre',
+    'Conjunto',
+    'Conj',
+    'Lote',
+    'Quadra',
+    'Qd',
+    'Portão',
+    'Portao'
 ];
 
 
@@ -612,27 +567,25 @@ let resultados = [];
 
 
 /* =========================================================
-   IMAGENS
+   SELEÇÃO DAS IMAGENS
 ========================================================= */
+
 
 document
 .getElementById('images')
-.addEventListener('change', function(e){
+.addEventListener('change', e => {
 
-    const box =
-        document.getElementById('thumbs');
+    const box = document.getElementById('thumbs');
 
     box.innerHTML = '';
 
     [...e.target.files].forEach(file => {
 
-        const img =
-            document.createElement('img');
+        const img = document.createElement('img');
 
         img.className = 'thumb';
 
-        img.src =
-            URL.createObjectURL(file);
+        img.src = URL.createObjectURL(file);
 
         box.appendChild(img);
 
@@ -648,34 +601,31 @@ document
    NORMALIZAÇÃO
 ========================================================= */
 
-function normalizarTexto(texto){
 
-    if(!texto){
-        return '';
-    }
+function normalizarTexto(texto){
 
     return texto
 
-        .replace(/[“”"]/g,'')
-        .replace(/[|]/g,' ')
-        .replace(/[•·]/g,' ')
-        .replace(/\s+/g,' ')
+        .replace(/[“”"']/g, '')
+
+        .replace(/[|•·]/g, ' ')
+
+        .replace(/\s+/g, ' ')
+
         .trim();
 
 }
 
 
 /*
-   Remove acentos para comparação.
+    Remove acentos para comparação.
 */
 
 function semAcentos(texto){
 
     return texto
-
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g,'')
-        .toLowerCase();
+        .replace(/[\u0300-\u036f]/g, '');
 
 }
 
@@ -684,52 +634,39 @@ function semAcentos(texto){
    LEVENSHTEIN
 ========================================================= */
 
+
 function levenshtein(a,b){
 
-    a = semAcentos(a);
-    b = semAcentos(b);
+    a = semAcentos(a.toLowerCase());
+
+    b = semAcentos(b.toLowerCase());
 
     const dp =
         Array.from(
-            {
-                length:a.length + 1
-            },
-            () =>
-                Array(
-                    b.length + 1
-                ).fill(0)
+            {length:a.length + 1},
+            () => Array(b.length + 1).fill(0)
         );
 
+    for(let i=0;i<=a.length;i++)
+        dp[i][0]=i;
 
-    for(let i=0;i<=a.length;i++){
-        dp[i][0] = i;
-    }
-
-
-    for(let j=0;j<=b.length;j++){
-        dp[0][j] = j;
-    }
-
+    for(let j=0;j<=b.length;j++)
+        dp[0][j]=j;
 
     for(let i=1;i<=a.length;i++){
 
         for(let j=1;j<=b.length;j++){
 
-            dp[i][j] =
-                Math.min(
+            dp[i][j] = Math.min(
 
-                    dp[i-1][j] + 1,
+                dp[i-1][j] + 1,
 
-                    dp[i][j-1] + 1,
+                dp[i][j-1] + 1,
 
-                    dp[i-1][j-1] +
-                    (
-                        a[i-1] === b[j-1]
-                        ? 0
-                        : 1
-                    )
+                dp[i-1][j-1] +
+                (a[i-1] === b[j-1] ? 0 : 1)
 
-                );
+            );
 
         }
 
@@ -742,35 +679,97 @@ function levenshtein(a,b){
 
 function similaridade(a,b){
 
-    const maior =
+    const max =
         Math.max(
-            semAcentos(a).length,
-            semAcentos(b).length
+            a.length,
+            b.length
         );
 
-    if(!maior){
-        return 1;
-    }
-
-    return 1 -
-        levenshtein(a,b) /
-        maior;
+    return max
+        ? 1 - levenshtein(a,b) / max
+        : 1;
 
 }
 
 
 /* =========================================================
-   RUA
+   DETECÇÃO DE RUÍDO
 ========================================================= */
 
-function ehLinhaDeRua(linha){
 
-    const texto =
-        normalizarTexto(linha);
+function contemRuido(texto){
+
+    const normalizado =
+        semAcentos(texto.toLowerCase());
+
+    return NOISE_WORDS.some(palavra => {
+
+        const p =
+            semAcentos(
+                palavra.toLowerCase()
+            );
+
+        return normalizado.includes(p);
+
+    });
+
+}
 
 
-    return /^(rua|r\.?|avenida|av\.?|alameda|travessa|estrada|rodovia|praça|praca|viela|largo|al)\b/i
-        .test(texto);
+/*
+    Remove palavras de interface.
+
+    Importante:
+    Não removemos a linha inteira.
+    Apenas retiramos a palavra de ruído.
+
+    Exemplo:
+
+    "Rua Bazilio Ramos MIAMI PAULISTA"
+
+    vira:
+
+    "Rua Bazilio Ramos PAULISTA"
+*/
+
+
+function removerRuido(texto){
+
+    let resultado = texto;
+
+    for(const palavra of NOISE_WORDS){
+
+        const escaped =
+            palavra.replace(
+                /[.*+?^${}()|[\]\\]/g,
+                '\\$&'
+            );
+
+        resultado =
+            resultado.replace(
+                new RegExp(`\\b${escaped}\\b`, 'gi'),
+                ' '
+            );
+
+    }
+
+    return resultado
+        .replace(/\s+/g,' ')
+        .trim();
+
+}
+
+
+/* =========================================================
+   DETECÇÃO DE PEDIDO
+========================================================= */
+
+
+function ehPedido(texto){
+
+    return /^\d{11,18}$/.test(
+        texto.replace(/\D/g,'')
+    );
 
 }
 
@@ -779,22 +778,39 @@ function ehLinhaDeRua(linha){
    CEP
 ========================================================= */
 
+
 function extrairCEP(texto){
 
-    if(!texto){
-        return '';
-    }
-
-    const match =
+    const encontrado =
         texto.match(
-            /\b(\d{5})[- ]?(\d{3})\b/
+            /\b\d{5}[- ]?\d{3}\b/
         );
 
-    if(!match){
-        return '';
+    if(!encontrado){
+
+        return {
+            valor:'',
+            texto:texto,
+            confianca:'baixa'
+        };
+
     }
 
-    return match[1] + match[2];
+    return {
+
+        valor:
+            encontrado[0]
+            .replace(/\D/g,''),
+
+        texto:
+            texto.replace(
+                encontrado[0],
+                ' '
+            ),
+
+        confianca:'alta'
+
+    };
 
 }
 
@@ -803,31 +819,39 @@ function extrairCEP(texto){
    UF
 ========================================================= */
 
-function encontrarUF(texto){
 
-    for(const uf of UF_LIST){
+function extrairUF(texto){
 
-        const regex =
-            new RegExp(
-                '\\b' + uf + '\\b',
-                'i'
-            );
+    const regex =
+        /\b(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)\b/i;
 
-        const match =
-            texto.match(regex);
+    const encontrado =
+        texto.match(regex);
 
-        if(match){
+    if(!encontrado){
 
-            return {
-                uf:uf,
-                index:match.index
-            };
-
-        }
+        return {
+            valor:'',
+            texto:texto,
+            confianca:'baixa'
+        };
 
     }
 
-    return null;
+    return {
+
+        valor:
+            encontrado[1].toUpperCase(),
+
+        texto:
+            texto.replace(
+                encontrado[0],
+                ' '
+            ),
+
+        confianca:'alta'
+
+    };
 
 }
 
@@ -836,87 +860,94 @@ function encontrarUF(texto){
    CIDADE
 ========================================================= */
 
-function encontrarCidade(texto){
 
-    /*
-       Primeiro tenta encontrar exatamente.
-    */
+/*
+    Primeiro procura cidade conhecida exatamente.
+
+    Isso é muito mais seguro do que tentar adivinhar
+    qualquer conjunto de palavras.
+*/
+
+
+function encontrarCidadeConhecida(texto){
+
+    const lower =
+        semAcentos(texto.toLowerCase());
+
+    let melhor = null;
 
     for(const cidade of KNOWN_CITIES){
 
-        const regex =
-            new RegExp(
-                '\\b' +
-                cidade
-                    .replace(
-                        /[.*+?^${}()|[\]\\]/g,
-                        '\\$&'
-                    ) +
-                '\\b',
-                'i'
+        const alvo =
+            semAcentos(
+                cidade.toLowerCase()
             );
 
+        const indice =
+            lower.lastIndexOf(alvo);
 
-        const match =
-            texto.match(regex);
+        if(indice !== -1){
 
+            if(
+                !melhor ||
+                alvo.length > melhor.alvo.length
+            ){
 
-        if(match){
+                melhor = {
 
-            return {
+                    nome:cidade,
 
-                cidade:cidade,
+                    indice,
 
-                index:match.index,
+                    tamanho:alvo.length,
 
-                tamanho:match[0].length,
+                    score:1
 
-                score:1
+                };
 
-            };
+            }
 
         }
 
     }
 
+    return melhor;
 
-    /*
-       Depois tenta corrigir erro de OCR.
+}
 
-       Exemplo:
 
-       São Pau1o
-       Sao Paülo
-       Sao Pauto
-    */
+/*
+    Tenta encontrar cidade com pequeno erro de OCR.
+
+    Exemplo:
+
+    "Sao Pa ulo"
+    "Guarulh0s"
+    etc.
+*/
+
+
+function encontrarCidadeFuzzy(texto){
 
     const palavras =
-        texto.split(/\s+/);
-
+        texto
+        .split(/\s+/)
+        .filter(Boolean);
 
     let melhor = null;
 
+    for(let quantidade=1; quantidade<=4; quantidade++){
 
-    for(let i=0;i<palavras.length;i++){
-
-        for(let tamanho=1;tamanho<=4;tamanho++){
-
-            if(
-                i + tamanho >
-                palavras.length
-            ){
-                continue;
-            }
-
+        for(
+            let i=0;
+            i<=palavras.length-quantidade;
+            i++
+        ){
 
             const candidato =
                 palavras
-                    .slice(
-                        i,
-                        i+tamanho
-                    )
-                    .join(' ');
-
+                .slice(i,i+quantidade)
+                .join(' ');
 
             for(const cidade of KNOWN_CITIES){
 
@@ -926,9 +957,8 @@ function encontrarCidade(texto){
                         cidade
                     );
 
-
                 if(
-                    score >= 0.80 &&
+                    score >= 0.84 &&
                     (
                         !melhor ||
                         score > melhor.score
@@ -937,11 +967,15 @@ function encontrarCidade(texto){
 
                     melhor = {
 
-                        cidade:cidade,
+                        nome:cidade,
 
-                        score:score,
+                        candidato,
 
-                        candidato:candidato
+                        score,
+
+                        indicePalavras:i,
+
+                        quantidade
 
                     };
 
@@ -953,33 +987,115 @@ function encontrarCidade(texto){
 
     }
 
+    return melhor;
 
-    if(!melhor){
-        return null;
+}
+
+
+/* =========================================================
+   NÚMERO DA CASA
+========================================================= */
+
+
+/*
+    Procura números que NÃO sejam:
+
+    - pedido
+    - CEP
+    - data
+    - hora
+    - telefone
+
+    Pode encontrar:
+
+    Rua X 123
+    Rua X SP 123
+    Rua X 123 Casa
+    Rua X Casa 123
+*/
+
+
+function encontrarNumero(texto){
+
+    const candidatos = [];
+
+    const regex =
+        /\b\d{1,5}(?:[A-Za-z])?\b/g;
+
+    let match;
+
+    while((match = regex.exec(texto)) !== null){
+
+        const numero = match[0];
+
+        const inicio = match.index;
+
+        const antes =
+            texto.slice(
+                Math.max(0,inicio-20),
+                inicio
+            );
+
+        const depois =
+            texto.slice(
+                inicio + numero.length,
+                inicio + numero.length + 30
+            );
+
+        /*
+            Ignora números muito grandes.
+        */
+
+        const somenteNumeros =
+            numero.replace(/\D/g,'');
+
+        if(
+            somenteNumeros.length > 5
+        ){
+            continue;
+        }
+
+        /*
+            Evita confundir número do CEP.
+        */
+
+        if(
+            /\d{5}[- ]?\d{0,3}$/.test(
+                antes + numero
+            )
+        ){
+            continue;
+        }
+
+        candidatos.push({
+
+            valor:numero,
+
+            inicio,
+
+            fim:
+                inicio + numero.length,
+
+            antes,
+
+            depois
+
+        });
+
     }
 
+    if(!candidatos.length){
 
-    const index =
-        semAcentos(texto)
-        .indexOf(
-            semAcentos(
-                melhor.candidato
-            )
-        );
+        return null;
 
+    }
 
-    return {
+    /*
+        Normalmente o primeiro número curto
+        encontrado no endereço é o número da casa.
+    */
 
-        cidade:melhor.cidade,
-
-        index:index,
-
-        tamanho:
-            melhor.candidato.length,
-
-        score:melhor.score
-
-    };
+    return candidatos[0];
 
 }
 
@@ -988,406 +1104,36 @@ function encontrarCidade(texto){
    COMPLEMENTO
 ========================================================= */
 
-function contemComplemento(texto){
 
-    const normalizado =
-        semAcentos(texto);
-
-    return COMPLEMENT_KEYWORDS.some(
-        palavra =>
-            normalizado.includes(
-                semAcentos(palavra)
-            )
-    );
-
-}
-
-
-/* =========================================================
-   LIMPAR RUÍDO
-========================================================= */
-
-function limparRuido(texto){
-
-    let resultado =
-        normalizarTexto(texto);
-
-
-    for(const palavra of NOISE_WORDS){
-
-        const regex =
-            new RegExp(
-                palavra.replace(
-                    /[.*+?^${}()|[\]\\]/g,
-                    '\\$&'
-                ),
-                'gi'
-            );
-
-        resultado =
-            resultado.replace(
-                regex,
-                ' '
-            );
-
-    }
-
-
-    return normalizarTexto(resultado);
-
-}
-
-
-/* =========================================================
-   ENCONTRAR BAIRRO CONHECIDO
-========================================================= */
-
-function encontrarBairroConhecido(texto){
-
-    for(const bairro of KNOWN_NEIGHBORHOODS){
-
-        const regex =
-            new RegExp(
-                '\\b' +
-                bairro.replace(
-                    /[.*+?^${}()|[\]\\]/g,
-                    '\\$&'
-                ) +
-                '\\b',
-                'i'
-            );
-
-
-        const match =
-            texto.match(regex);
-
-
-        if(match){
-
-            return {
-
-                bairro:bairro,
-
-                index:match.index,
-
-                tamanho:match[0].length,
-
-                score:1
-
-            };
-
-        }
-
-    }
-
-    return null;
-
-}
-
-
-/* =========================================================
-   DETECTAR BAIRRO EM MAIÚSCULAS
-========================================================= */
-
-function encontrarBairroMaiusculo(texto){
-
-    /*
-       Exemplo do seu aplicativo:
-
-       MIAMI PAULISTA
-
-       Como o bairro aparece em maiúsculas,
-       usamos isso como forte indicação.
-    */
-
-    const palavras =
-        texto.split(/\s+/);
-
-
-    for(let tamanho=4;tamanho>=1;tamanho--){
-
-        for(
-            let i=0;
-            i+tamanho<=palavras.length;
-            i++
-        ){
-
-            const grupo =
-                palavras
-                    .slice(
-                        i,
-                        i+tamanho
-                    )
-                    .join(' ');
-
-
-            const letras =
-                grupo.replace(
-                    /[^A-Za-zÀ-ÿ]/g,
-                    ''
-                );
-
-
-            if(
-                letras.length >= 4 &&
-                grupo === grupo.toUpperCase() &&
-                /[A-ZÀ-Ý]/.test(grupo)
-            ){
-
-                /*
-                   Evita confundir SP com bairro.
-                */
-
-                if(
-                    !UF_LIST.includes(
-                        grupo
-                    )
-                ){
-
-                    return {
-
-                        bairro:grupo,
-
-                        index:
-                            texto.indexOf(
-                                grupo
-                            ),
-
-                        tamanho:
-                            grupo.length
-
-                    };
-
-                }
-
-            }
-
-        }
-
-    }
-
-
-    return null;
-
-}
-
-
-/* =========================================================
-   SEPARAR NÚMERO
-========================================================= */
-
-function encontrarNumeroResidencial(texto){
-
-    /*
-       Retira CEP antes de procurar número.
-    */
-
-    let temp =
-        texto.replace(
-            /\b\d{5}[- ]?\d{3}\b/g,
-            ' '
-        );
-
-
-    /*
-       Datas não deveriam chegar aqui,
-       mas protegemos mesmo assim.
-    */
-
-    temp =
-        temp.replace(
-            /\b\d{4}[-/]\d{2}[-/]\d{2}\b/g,
-            ' '
-        );
-
-
-    const candidatos = [];
-
+function detectarComplemento(texto){
 
     const regex =
-        /\b\d{1,6}\b/g;
-
-
-    let match;
-
-
-    while(
-        (match = regex.exec(temp)) !== null
-    ){
-
-        const numero =
-            match[0];
-
-        const antes =
-            temp
-                .slice(
-                    0,
-                    match.index
-                )
-                .trim();
-
-
-        const depois =
-            temp
-                .slice(
-                    match.index +
-                    numero.length
-                )
-                .trim();
-
-
-        let score = 0;
-
-
-        /*
-           Número depois da UF:
-           forte indicador.
-        */
-
-        const trechoAntes =
-            antes.slice(-15);
-
-
-        if(
-            /\b(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)\b/i
-            .test(trechoAntes)
-        ){
-
-            score += 5;
-
-        }
-
-
-        /*
-           Número seguido de complemento.
-        */
-
-        if(
-            contemComplemento(
-                depois
-            )
-        ){
-
-            score += 4;
-
-        }
-
-
-        /*
-           Número no final do endereço.
-        */
-
-        if(!depois){
-
-            score += 2;
-
-        }
-
-
-        /*
-           Número seguido de texto comum.
-        */
-
-        if(
-            /^[A-Za-zÀ-ÿ]/.test(
-                depois
-            )
-        ){
-
-            score += 1;
-
-        }
-
-
-        /*
-           Se estiver dentro de algo parecido
-           com "Rua 25 de Março", reduz muito.
-        */
-
-        const contextoAntes =
-            antes.slice(-25);
-
-
-        if(
-            /\b(rua|r\.|avenida|av\.?|alameda|travessa|estrada|rodovia|praça|praca)\s+\d+$/i
-            .test(contextoAntes)
-        ){
-
-            score -= 5;
-
-        }
-
-
-        candidatos.push({
-
-            numero,
-
-            index:match.index,
-
-            depois,
-
-            antes,
-
-            score
-
-        });
-
-    }
-
-
-    if(!candidatos.length){
-
-        return null;
-
-    }
-
-
-    candidatos.sort(
-        (a,b) =>
-            b.score - a.score
-    );
-
-
-    return candidatos[0];
-
-}
-
-
-/* =========================================================
-   SEPARAR RUA
-========================================================= */
-
-function extrairNomeDaRua(texto){
-
-    const match =
-        texto.match(
-            /^(rua|r\.?|avenida|av\.?|alameda|travessa|estrada|rodovia|praça|praca|viela|largo|al)\b/i
+        new RegExp(
+            `\\b(${COMPLEMENT_PREFIXES.join('|')})\\b.*`,
+            'i'
         );
 
+    const encontrado =
+        texto.match(regex);
 
-    if(!match){
+    if(!encontrado){
 
         return {
-            rua:'',
-            resto:texto
+
+            valor:'',
+
+            confianca:'media'
+
         };
 
     }
 
-
-    const resto =
-        texto
-            .slice(
-                match[0].length
-            )
-            .trim();
-
-
     return {
 
-        prefixo:match[0],
+        valor:
+            encontrado[0].trim(),
 
-        resto:resto
+        confianca:'alta'
 
     };
 
@@ -1395,14 +1141,119 @@ function extrairNomeDaRua(texto){
 
 
 /* =========================================================
-   PARSER PRINCIPAL
+   RUA
 ========================================================= */
 
-function analisarEndereco(bloco){
+
+/*
+    Procura o início da rua.
+
+    Exemplo:
+
+    "Rua Bazilio Ramos PAULISTA"
+
+    -> Rua Bazilio Ramos
+*/
+
+
+function encontrarInicioRua(texto){
+
+    const palavras =
+        texto.split(/\s+/);
+
+    for(let i=0;i<palavras.length;i++){
+
+        const palavra =
+            palavras[i]
+            .replace(/[.,]/g,'');
+
+        const encontrada =
+            STREET_PREFIXES.some(
+                prefixo =>
+                    semAcentos(
+                        palavra.toLowerCase()
+                    ) ===
+                    semAcentos(
+                        prefixo.toLowerCase()
+                    )
+            );
+
+        if(encontrada){
+
+            return i;
+
+        }
+
+    }
+
+    return -1;
+
+}
+
+
+/* =========================================================
+   LIMPEZA DO ENDEREÇO
+========================================================= */
+
+
+function limparTrechoEndereco(texto){
+
+    let resultado =
+        removerRuido(texto);
+
+    /*
+        Remove datas.
+    */
+
+    resultado =
+        resultado.replace(
+            /\b\d{4}[-/]\d{2}[-/]\d{2}\b/g,
+            ' '
+        );
+
+    /*
+        Remove horários.
+    */
+
+    resultado =
+        resultado.replace(
+            /\b\d{1,2}:\d{2}(?::\d{2})?\b/g,
+            ' '
+        );
+
+    /*
+        Remove ícones/textos estranhos.
+    */
+
+    resultado =
+        resultado.replace(
+            /[|•·]/g,
+            ' '
+        );
+
+    return resultado
+        .replace(/\s+/g,' ')
+        .trim();
+
+}
+
+
+/* =========================================================
+   PARSER PRINCIPAL DO ENDEREÇO
+========================================================= */
+
+
+function extrairEndereco(linhas){
+
+    let texto =
+        linhas.join(' ');
+
+    texto =
+        limparTrechoEndereco(texto);
+
 
     const resultado = {
 
-        nome:'',
         rua:'',
         numero:'',
         complemento:'',
@@ -1413,10 +1264,9 @@ function analisarEndereco(bloco){
 
         confianca:{
 
-            nome:'baixa',
             rua:'baixa',
             numero:'baixa',
-            complemento:'baixa',
+            complemento:'media',
             bairro:'baixa',
             cidade:'baixa',
             uf:'baixa',
@@ -1428,315 +1278,342 @@ function analisarEndereco(bloco){
 
 
     /*
-       Limpa linhas vazias e ruídos.
+        -----------------------------------------------------
+        1. CEP
+        -----------------------------------------------------
     */
-
-    let linhas =
-        bloco
-
-            .map(l =>
-                limparRuido(l)
-            )
-
-            .filter(Boolean);
-
-
-    /*
-       Encontrar rua.
-    */
-
-    const indiceRua =
-        linhas.findIndex(
-            l =>
-                ehLinhaDeRua(l)
-        );
-
-
-    if(indiceRua === -1){
-
-        return null;
-
-    }
-
-
-    /* =====================================================
-       NOME
-    ===================================================== */
-
-    for(
-        let i=indiceRua-1;
-        i>=0;
-        i--
-    ){
-
-        const linha =
-            limparRuido(
-                linhas[i]
-            );
-
-
-        if(!linha){
-            continue;
-        }
-
-
-        /*
-           Ignora números.
-        */
-
-        if(
-            /\d/.test(linha)
-        ){
-            continue;
-        }
-
-
-        /*
-           Nome normalmente contém
-           pelo menos duas palavras.
-        */
-
-        const palavras =
-            linha.split(/\s+/);
-
-
-        if(
-            palavras.length >= 2 &&
-            /^[A-Za-zÀ-ÿ'´` ]+$/.test(
-                linha
-            )
-        ){
-
-            resultado.nome =
-                linha;
-
-            resultado.confianca.nome =
-                'alta';
-
-            break;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       JUNTAR O ENDEREÇO
-    ===================================================== */
-
-    /*
-       Começamos na rua e pegamos
-       as linhas seguintes até CEP.
-
-       A ordem não importa.
-    */
-
-    let linhasEndereco = [];
-
-
-    for(
-        let i=indiceRua;
-        i<linhas.length;
-        i++
-    ){
-
-        const linha =
-            limparRuido(
-                linhas[i]
-            );
-
-
-        if(!linha){
-            continue;
-        }
-
-
-        linhasEndereco.push(
-            linha
-        );
-
-
-        /*
-           CEP encerra a entrega.
-        */
-
-        if(
-            extrairCEP(linha)
-        ){
-
-            break;
-
-        }
-
-    }
-
-
-    let endereco =
-        linhasEndereco.join(' ');
-
-
-    endereco =
-        normalizarTexto(
-            endereco
-        );
-
-
-    /* =====================================================
-       CEP
-    ===================================================== */
 
     const cep =
-        extrairCEP(
-            endereco
-        );
+        extrairCEP(texto);
 
+    resultado.cep =
+        cep.valor;
 
-    if(cep){
+    resultado.confianca.cep =
+        cep.confianca;
 
-        resultado.cep =
-            cep;
-
-        resultado.confianca.cep =
-            'alta';
-
-
-        endereco =
-            endereco.replace(
-                /\b\d{5}[- ]?\d{3}\b/,
-                ' '
-            );
-
-    }
-
-
-    /* =====================================================
-       UF
-    ===================================================== */
-
-    const ufInfo =
-        encontrarUF(
-            endereco
-        );
-
-
-    if(ufInfo){
-
-        resultado.uf =
-            ufInfo.uf;
-
-        resultado.confianca.uf =
-            'alta';
-
-
-        endereco =
-            endereco.replace(
-                new RegExp(
-                    '\\b' +
-                    ufInfo.uf +
-                    '\\b',
-                    'i'
-                ),
-                ' '
-            );
-
-    }
-
-
-    /* =====================================================
-       CIDADE
-    ===================================================== */
-
-    const cidadeInfo =
-        encontrarCidade(
-            endereco
-        );
-
-
-    if(cidadeInfo){
-
-        resultado.cidade =
-            cidadeInfo.cidade;
-
-
-        resultado.confianca.cidade =
-            cidadeInfo.score >= 0.95
-            ? 'alta'
-            : 'media';
-
-
-        /*
-           Remove a cidade do texto.
-        */
-
-        const cidadeRegex =
-            new RegExp(
-                cidadeInfo.cidade.replace(
-                    /[.*+?^${}()|[\]\\]/g,
-                    '\\$&'
-                ),
-                'i'
-            );
-
-
-        endereco =
-            endereco.replace(
-                cidadeRegex,
-                ' '
-            );
-
-    }
-
-
-    endereco =
-        normalizarTexto(
-            endereco
-        );
-
-
-    /* =====================================================
-       BAIRRO
-    ===================================================== */
-
-    let bairroInfo =
-        encontrarBairroConhecido(
-            endereco
-        );
+    texto =
+        cep.texto;
 
 
     /*
-       Se não achou na lista,
-       tenta texto em maiúsculo.
+        -----------------------------------------------------
+        2. UF
+        -----------------------------------------------------
     */
 
-    if(!bairroInfo){
+    const uf =
+        extrairUF(texto);
 
-        bairroInfo =
-            encontrarBairroMaiusculo(
-                endereco
+    resultado.uf =
+        uf.valor;
+
+    resultado.confianca.uf =
+        uf.confianca;
+
+    texto =
+        uf.texto;
+
+
+    /*
+        -----------------------------------------------------
+        3. CIDADE
+        -----------------------------------------------------
+    */
+
+    let cidade =
+        encontrarCidadeConhecida(texto);
+
+
+    /*
+        Se não encontrou exatamente,
+        tenta fuzzy.
+    */
+
+    if(!cidade){
+
+        const fuzzy =
+            encontrarCidadeFuzzy(texto);
+
+        if(
+            fuzzy &&
+            fuzzy.score >= 0.84
+        ){
+
+            cidade = {
+
+                nome:fuzzy.nome,
+
+                indice:0,
+
+                score:fuzzy.score
+
+            };
+
+            /*
+                Remove aproximadamente a ocorrência
+                encontrada.
+            */
+
+            const pos =
+                texto
+                .toLowerCase()
+                .lastIndexOf(
+                    fuzzy.candidato.toLowerCase()
+                );
+
+            if(pos !== -1){
+
+                texto =
+                    texto.slice(0,pos) +
+                    ' ' +
+                    texto.slice(
+                        pos +
+                        fuzzy.candidato.length
+                    );
+
+            }
+
+            resultado.cidade =
+                fuzzy.nome;
+
+            resultado.confianca.cidade =
+                'media';
+
+        }
+
+    }
+    else{
+
+        resultado.cidade =
+            cidade.nome;
+
+        resultado.confianca.cidade =
+            'alta';
+
+
+        /*
+            Remove a cidade do endereço.
+        */
+
+        texto =
+            texto.slice(
+                0,
+                cidade.indice
+            ) +
+            ' ' +
+            texto.slice(
+                cidade.indice +
+                cidade.tamanho
             );
 
     }
 
 
-    if(bairroInfo){
+    /*
+        -----------------------------------------------------
+        4. NÚMERO
+        -----------------------------------------------------
+    */
 
-        resultado.bairro =
-            bairroInfo.bairro;
-
-        resultado.confianca.bairro =
-            bairroInfo.tamanho > 3
-            ? 'alta'
-            : 'media';
+    const numero =
+        encontrarNumero(texto);
 
 
-        endereco =
-            endereco.replace(
+    if(numero){
+
+        resultado.numero =
+            numero.valor;
+
+        resultado.confianca.numero =
+            'alta';
+
+
+        /*
+            Remove somente o número encontrado.
+        */
+
+        texto =
+            texto.slice(
+                0,
+                numero.inicio
+            ) +
+            ' ' +
+            texto.slice(
+                numero.fim
+            );
+
+    }
+
+
+    /*
+        -----------------------------------------------------
+        5. COMPLEMENTO
+        -----------------------------------------------------
+    */
+
+    const complemento =
+        detectarComplemento(texto);
+
+
+    if(complemento.valor){
+
+        resultado.complemento =
+            complemento.valor;
+
+        resultado.confianca.complemento =
+            complemento.confianca;
+
+
+        /*
+            Remove complemento.
+        */
+
+        texto =
+            texto.replace(
+                complemento.valor,
+                ' '
+            );
+
+    }
+
+
+    /*
+        -----------------------------------------------------
+        6. RUA
+        -----------------------------------------------------
+    */
+
+    texto =
+        texto
+        .replace(/\s+/g,' ')
+        .trim();
+
+
+    const inicioRua =
+        encontrarInicioRua(texto);
+
+
+    if(inicioRua >= 0){
+
+        const palavras =
+            texto.split(/\s+/);
+
+        /*
+            Se temos prefixo de rua,
+            pegamos a partir dele.
+        */
+
+        let rua =
+            palavras
+            .slice(inicioRua)
+            .join(' ');
+
+
+        /*
+            Se ainda existir bairro depois da rua,
+            precisamos separar.
+        */
+
+        resultado.rua =
+            rua.trim();
+
+        resultado.confianca.rua =
+            'alta';
+
+
+        /*
+            Tentativa de identificar bairro
+            como o restante antes/depois da rua.
+        */
+
+        const palavrasRua =
+            resultado.rua.split(/\s+/);
+
+
+        /*
+            Remove palavras claramente não pertencentes
+            ao nome da rua.
+        */
+
+        resultado.rua =
+            resultado.rua
+            .replace(/\s+/g,' ')
+            .trim();
+
+    }
+    else{
+
+        /*
+            Não encontrou "Rua", "Av", etc.
+
+            Nesse caso não inventamos uma rua.
+            Guardamos o texto para revisão.
+        */
+
+        resultado.rua =
+            texto.trim();
+
+        resultado.confianca.rua =
+            'media';
+
+    }
+
+
+    /*
+        -----------------------------------------------------
+        7. BAIRRO
+        -----------------------------------------------------
+    */
+
+
+    /*
+        O bairro é a parte mais difícil do endereço porque
+        ele pode aparecer:
+
+        Rua X Bairro Y Cidade SP
+
+        ou
+
+        Rua X Cidade SP Número
+        Bairro Y
+
+        Por isso fazemos algumas heurísticas.
+    */
+
+
+    let restoOriginal =
+        linhas
+        .map(limparTrechoEndereco)
+        .join(' ')
+        .replace(/\s+/g,' ')
+        .trim();
+
+
+    /*
+        Remove CEP, cidade e UF do texto original
+        para descobrir o que sobrou.
+    */
+
+    restoOriginal =
+        restoOriginal
+        .replace(/\b\d{5}[- ]?\d{3}\b/g,' ')
+        .replace(/\b(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)\b/gi,' ');
+
+
+    for(const cidadeConhecida of KNOWN_CITIES){
+
+        const escaped =
+            cidadeConhecida.replace(
+                /[.*+?^${}()|[\]\\]/g,
+                '\\$&'
+            );
+
+        restoOriginal =
+            restoOriginal.replace(
                 new RegExp(
-                    bairroInfo.bairro.replace(
-                        /[.*+?^${}()|[\]\\]/g,
-                        '\\$&'
-                    ),
-                    'i'
+                    `\\b${escaped}\\b`,
+                    'gi'
                 ),
                 ' '
             );
@@ -1744,159 +1621,182 @@ function analisarEndereco(bloco){
     }
 
 
-    endereco =
-        normalizarTexto(
-            endereco
-        );
+    restoOriginal =
+        removerRuido(restoOriginal);
 
 
-    /* =====================================================
-       NÚMERO
-    ===================================================== */
+    /*
+        Remove o número.
+    */
 
-    const numeroInfo =
-        encontrarNumeroResidencial(
-            endereco
-        );
+    if(resultado.numero){
+
+        restoOriginal =
+            restoOriginal.replace(
+                new RegExp(
+                    `\\b${resultado.numero}\\b`,
+                    'gi'
+                ),
+                ' '
+            );
+
+    }
 
 
-    if(numeroInfo){
+    /*
+        Remove complemento.
+    */
 
-        resultado.numero =
-            numeroInfo.numero;
+    if(resultado.complemento){
+
+        restoOriginal =
+            restoOriginal.replace(
+                resultado.complemento,
+                ' '
+            );
+
+    }
 
 
-        resultado.confianca.numero =
-            numeroInfo.score >= 4
-            ? 'alta'
-            : numeroInfo.score >= 2
-            ? 'media'
-            : 'baixa';
+    restoOriginal =
+        restoOriginal
+        .replace(/\s+/g,' ')
+        .trim();
+
+
+    /*
+        Se temos uma rua conhecida, tentamos descobrir
+        o que vem antes/depois dela.
+    */
+
+    if(resultado.rua){
+
+        const ruaNormalizada =
+            resultado.rua
+            .toLowerCase()
+            .trim();
+
+        const originalNormalizado =
+            restoOriginal
+            .toLowerCase();
 
 
         /*
-           O texto antes do número e depois
-           será usado para rua/complemento.
+            Normalmente o bairro aparece depois
+            do nome da rua.
+
+            Para não destruir nomes de ruas,
+            só fazemos isso quando houver material
+            claramente separado.
         */
 
-        const antes =
-            endereco
+        const pos =
+            originalNormalizado.indexOf(
+                ruaNormalizada
+            );
+
+
+        if(pos !== -1){
+
+            const depois =
+                restoOriginal
                 .slice(
-                    0,
-                    numeroInfo.index
+                    pos +
+                    resultado.rua.length
                 )
                 .trim();
 
+            if(depois){
 
-        const depois =
-            numeroInfo.depois;
+                resultado.bairro =
+                    depois;
+
+                resultado.confianca.bairro =
+                    'media';
+
+            }
+
+        }
+
+    }
 
 
-        /*
-           Complemento normalmente vem depois
-           do número.
-        */
+    /*
+        Caso ainda não tenha bairro,
+        fazemos uma heurística baseada nas palavras.
+    */
 
-        if(depois){
+    if(!resultado.bairro){
 
-            resultado.complemento =
-                depois;
+        const palavras =
+            restoOriginal
+            .split(/\s+/)
+            .filter(Boolean);
 
-            resultado.confianca.complemento =
-                contemComplemento(
-                    depois
+
+        if(palavras.length >= 1){
+
+            /*
+                Evitamos considerar novamente o nome da rua.
+            */
+
+            const palavrasRua =
+                resultado.rua
+                .split(/\s+/)
+                .filter(Boolean);
+
+
+            let restante =
+                [...palavras];
+
+
+            while(
+                restante.length &&
+                palavrasRua.length &&
+                semAcentos(
+                    restante[0].toLowerCase()
+                ) ===
+                semAcentos(
+                    palavrasRua[0].toLowerCase()
                 )
-                ? 'alta'
-                : 'media';
+            ){
+
+                restante.shift();
+                palavrasRua.shift();
+
+            }
+
+
+            if(restante.length){
+
+                /*
+                    Bairros podem ter 1, 2 ou mais palavras.
+                    Mantemos o restante para revisão.
+                */
+
+                resultado.bairro =
+                    restante.join(' ');
+
+                resultado.confianca.bairro =
+                    'media';
+
+            }
 
         }
-
-
-        /*
-           O texto anterior contém
-           o nome da rua.
-        */
-
-        endereco =
-            antes;
-
-    }
-
-
-    /* =====================================================
-       RUA
-    ===================================================== */
-
-    const ruaInfo =
-        extrairNomeDaRua(
-            endereco
-        );
-
-
-    if(ruaInfo.prefixo){
-
-        let rua =
-            ruaInfo.prefixo;
-
-
-        /*
-           resto é o nome da rua.
-        */
-
-        if(ruaInfo.resto){
-
-            rua +=
-                ' ' +
-                ruaInfo.resto;
-
-        }
-
-
-        resultado.rua =
-            normalizarTexto(
-                rua
-            );
-
-
-        resultado.confianca.rua =
-            resultado.rua.length >= 5
-            ? 'alta'
-            : 'media';
-
-    }else{
-
-        /*
-           Se o parser não conseguiu
-           identificar o prefixo,
-           preservamos o texto.
-        */
-
-        resultado.rua =
-            endereco;
-
-        resultado.confianca.rua =
-            endereco
-            ? 'media'
-            : 'baixa';
 
     }
 
 
     /*
-       Limpeza final.
+        Se não existe bairro, baixa confiança.
     */
 
-    resultado.rua =
-        normalizarTexto(
-            resultado.rua
-        );
+    if(!resultado.bairro){
 
+        resultado.confianca.bairro =
+            'baixa';
 
-    /*
-       Se ainda sobrou algo claramente
-       parecido com complemento na rua,
-       não movemos automaticamente.
-    */
+    }
 
 
     return resultado;
@@ -1905,364 +1805,351 @@ function analisarEndereco(bloco){
 
 
 /* =========================================================
-   ENCONTRAR ENTREGAS
+   EXTRAÇÃO DE UMA ENTREGA
 ========================================================= */
 
-function extrairEntregas(texto){
+
+function extractOrder(bloco){
+
+    const result = {
+
+        pedido:'',
+        nome:'',
+        rua:'',
+        numero:'',
+        complemento:'',
+        bairro:'',
+        cidade:'',
+        uf:'',
+        cep:'',
+        dataHora:'',
+        confianca:{}
+
+    };
+
 
     let linhas =
+        bloco
+        .map(normalizarTexto)
+        .filter(Boolean);
+
+
+    /*
+        -----------------------------------------------------
+        1. PEDIDO
+        -----------------------------------------------------
+    */
+
+    const indicePedido =
+        linhas.findIndex(
+            ehPedido
+        );
+
+
+    if(indicePedido >= 0){
+
+        result.pedido =
+            linhas[indicePedido];
+
+        result.confianca.pedido =
+            'alta';
+
+        linhas.splice(
+            indicePedido,
+            1
+        );
+
+    }
+    else{
+
+        result.confianca.pedido =
+            'baixa';
+
+    }
+
+
+    /*
+        -----------------------------------------------------
+        2. DATA/HORA
+        -----------------------------------------------------
+    */
+
+    const dataRegex =
+        /\b\d{4}[-/]\d{2}[-/]\d{2}\s+\d{1,2}:\d{2}(?::\d{2})?\b/;
+
+
+    const indiceData =
+        linhas.findIndex(
+            linha =>
+                dataRegex.test(linha)
+        );
+
+
+    if(indiceData >= 0){
+
+        const encontrada =
+            linhas[indiceData]
+            .match(dataRegex);
+
+        result.dataHora =
+            encontrada
+            ? encontrada[0]
+            : '';
+
+        result.confianca.dataHora =
+            'alta';
+
+        linhas.splice(
+            indiceData,
+            1
+        );
+
+    }
+    else{
+
+        result.confianca.dataHora =
+            'baixa';
+
+    }
+
+
+    /*
+        -----------------------------------------------------
+        3. LIMPEZA DAS LINHAS
+        -----------------------------------------------------
+    */
+
+
+    linhas =
+        linhas
+        .map(limparTrechoEndereco)
+        .filter(Boolean);
+
+
+    /*
+        -----------------------------------------------------
+        4. NOME
+        -----------------------------------------------------
+    */
+
+
+    /*
+        O nome normalmente é a primeira linha textual
+        após o pedido.
+
+        Porém não aceitamos linhas que sejam claramente
+        endereço, cidade ou interface.
+    */
+
+    let indiceNome = -1;
+
+
+    for(let i=0;i<linhas.length;i++){
+
+        const linha =
+            linhas[i];
+
+
+        if(
+            linha.length < 3
+        ){
+            continue;
+        }
+
+
+        /*
+            Ignora linhas que começam com rua.
+        */
+
+        if(
+            encontrarInicioRua(linha) === 0
+        ){
+            continue;
+        }
+
+
+        /*
+            Ignora linhas contendo CEP.
+        */
+
+        if(
+            /\b\d{5}[- ]?\d{3}\b/.test(linha)
+        ){
+            continue;
+        }
+
+
+        /*
+            Ignora linhas que sejam apenas números.
+        */
+
+        if(
+            /^\d+$/.test(linha)
+        ){
+            continue;
+        }
+
+
+        /*
+            Nome normalmente contém somente letras,
+            espaços e alguns caracteres comuns.
+        */
+
+        const nomeValido =
+            /^[A-Za-zÀ-ÿ\s.-]+$/.test(
+                linha
+            );
+
+
+        if(
+            nomeValido &&
+            linha.split(/\s+/).length >= 2 &&
+            !contemRuido(linha)
+        ){
+
+            indiceNome = i;
+
+            break;
+
+        }
+
+    }
+
+
+    if(indiceNome >= 0){
+
+        result.nome =
+            linhas[indiceNome];
+
+        result.confianca.nome =
+            'alta';
+
+        linhas.splice(
+            indiceNome,
+            1
+        );
+
+    }
+    else{
+
+        result.confianca.nome =
+            'baixa';
+
+    }
+
+
+    /*
+        -----------------------------------------------------
+        5. ENDEREÇO
+        -----------------------------------------------------
+    */
+
+
+    const endereco =
+        extrairEndereco(linhas);
+
+
+    result.rua =
+        endereco.rua;
+
+    result.numero =
+        endereco.numero;
+
+    result.complemento =
+        endereco.complemento;
+
+    result.bairro =
+        endereco.bairro;
+
+    result.cidade =
+        endereco.cidade;
+
+    result.uf =
+        endereco.uf;
+
+    result.cep =
+        endereco.cep;
+
+
+    Object.assign(
+        result.confianca,
+        endereco.confianca
+    );
+
+
+    return result;
+
+}
+
+
+/* =========================================================
+   SEPARAÇÃO DOS PEDIDOS
+========================================================= */
+
+
+/*
+    Cada pedido começa com um número de 11 a 18 dígitos.
+
+    Isso continua sendo nossa principal forma de separar
+    as entregas.
+*/
+
+
+function separarPedidos(texto){
+
+    const linhas =
         texto
-
-            .split(/\r?\n/)
-
-            .map(l =>
-                normalizarTexto(l)
-            )
-
-            .filter(Boolean);
+        .split(/\r?\n/)
+        .map(x => x.trim())
+        .filter(Boolean);
 
 
-    const indicesRua = [];
+    const blocos = [];
+
+    let atual = [];
 
 
-    /*
-       Cada rua representa o começo
-       de uma entrega.
-    */
-
-    for(
-        let i=0;
-        i<linhas.length;
-        i++
-    ){
+    for(const linha of linhas){
 
         if(
-            ehLinhaDeRua(
-                linhas[i]
-            )
+            ehPedido(linha) &&
+            atual.length
         ){
 
-            indicesRua.push(i);
+            blocos.push(atual);
+
+            atual = [];
 
         }
+
+        atual.push(linha);
 
     }
 
 
-    const entregas = [];
+    if(atual.length){
 
-
-    /*
-       Cria um bloco entre uma rua
-       e a próxima rua.
-    */
-
-    for(
-        let n=0;
-        n<indicesRua.length;
-        n++
-    ){
-
-        const inicio =
-            indicesRua[n];
-
-
-        const fim =
-            n + 1 <
-            indicesRua.length
-
-            ? indicesRua[n+1]
-
-            : linhas.length;
-
-
-        /*
-           Janela anterior para tentar
-           encontrar o nome.
-
-           No seu layout o nome está
-           imediatamente antes da rua.
-        */
-
-        const bloco = [];
-
-
-        const inicioNome =
-            Math.max(
-                0,
-                inicio - 3
-            );
-
-
-        for(
-            let i=inicioNome;
-            i<fim;
-            i++
-        ){
-
-            bloco.push(
-                linhas[i]
-            );
-
-        }
-
-
-        /*
-           Analisa o endereço.
-        */
-
-        const resultado =
-            analisarEndereco(
-                bloco
-            );
-
-
-        if(!resultado){
-            continue;
-        }
-
-
-        /*
-           Precisa ter pelo menos rua
-           ou CEP para ser aceito.
-        */
-
-        if(
-            !resultado.rua &&
-            !resultado.cep
-        ){
-
-            continue;
-
-        }
-
-
-        /*
-           Evita duplicações.
-        */
-
-        const duplicado =
-            entregas.some(x =>
-
-                x.nome ===
-                resultado.nome &&
-
-                x.rua ===
-                resultado.rua &&
-
-                x.numero ===
-                resultado.numero
-
-            );
-
-
-        if(!duplicado){
-
-            entregas.push(
-                resultado
-            );
-
-        }
+        blocos.push(atual);
 
     }
 
 
-    return entregas;
+    return blocos;
 
 }
 
 
 /* =========================================================
-   PRÉ-PROCESSAMENTO DA IMAGEM
+   OCR
 ========================================================= */
 
-async function prepararImagem(file){
-
-    const img =
-        await new Promise(
-            (resolve,reject)=>{
-
-                const image =
-                    new Image();
-
-
-                image.onload =
-                    () => resolve(image);
-
-
-                image.onerror =
-                    reject;
-
-
-                image.src =
-                    URL.createObjectURL(
-                        file
-                    );
-
-            }
-        );
-
-
-    const largura =
-        img.width;
-
-
-    const altura =
-        img.height;
-
-
-    /*
-       Na captura que você enviou:
-
-       - aproximadamente 20% superior
-         contém cabeçalho/filtros.
-
-       - aproximadamente 27% da direita
-         contém os botões:
-
-         navegação
-         telefone
-         assinar
-         anomalia
-         etc.
-
-       Portanto usamos aproximadamente
-       73% da largura.
-    */
-
-    const cropY =
-        Math.floor(
-            altura * 0.20
-        );
-
-
-    const cropWidth =
-        Math.floor(
-            largura * 0.73
-        );
-
-
-    const cropHeight =
-        altura - cropY;
-
-
-    const canvas =
-        document.createElement(
-            'canvas'
-        );
-
-
-    canvas.width =
-        cropWidth;
-
-    canvas.height =
-        cropHeight;
-
-
-    const ctx =
-        canvas.getContext(
-            '2d'
-        );
-
-
-    /*
-       Fundo branco.
-    */
-
-    ctx.fillStyle =
-        '#ffffff';
-
-    ctx.fillRect(
-        0,
-        0,
-        cropWidth,
-        cropHeight
-    );
-
-
-    /*
-       Recorta somente a região útil.
-    */
-
-    ctx.drawImage(
-
-        img,
-
-        0,
-        cropY,
-
-        cropWidth,
-        cropHeight,
-
-        0,
-        0,
-
-        cropWidth,
-        cropHeight
-
-    );
-
-
-    /*
-       Aumenta a imagem para ajudar
-       o OCR.
-    */
-
-    const escala = 1.5;
-
-
-    const finalCanvas =
-        document.createElement(
-            'canvas'
-        );
-
-
-    finalCanvas.width =
-        cropWidth * escala;
-
-
-    finalCanvas.height =
-        cropHeight * escala;
-
-
-    const finalCtx =
-        finalCanvas.getContext(
-            '2d'
-        );
-
-
-    finalCtx.imageSmoothingEnabled =
-        true;
-
-
-    finalCtx.drawImage(
-
-        canvas,
-
-        0,
-        0,
-
-        finalCanvas.width,
-        finalCanvas.height
-
-    );
-
-
-    return finalCanvas;
-
-}
-
-
-/* =========================================================
-   PROCESSAR IMAGENS
-========================================================= */
 
 async function processarImagens(){
 
     const files =
-        document.getElementById(
-            'images'
-        ).files;
+        document
+        .getElementById('images')
+        .files;
 
 
     if(!files.length){
@@ -2277,27 +2164,16 @@ async function processarImagens(){
 
 
     const status =
-        document.getElementById(
-            'status'
-        );
-
+        document.getElementById('status');
 
     const bar =
-        document.getElementById(
-            'bar'
-        );
-
+        document.getElementById('bar');
 
     const raw =
-        document.getElementById(
-            'raw'
-        );
+        document.getElementById('raw');
 
 
-    resultados = [];
-
-
-    let textoTotal = '';
+    let texto = '';
 
 
     try{
@@ -2309,131 +2185,69 @@ async function processarImagens(){
         ){
 
             status.textContent =
-                `Preparando imagem ${i+1} de ${files.length}...`;
-
-
-            const imagem =
-                await prepararImagem(
-                    files[i]
-                );
-
-
-            status.textContent =
-                `Lendo nome e endereço ${i+1}/${files.length}...`;
+                `Lendo imagem ${i+1} de ${files.length}...`;
 
 
             const res =
                 await Tesseract.recognize(
-
-                    imagem,
-
+                    files[i],
                     'por',
-
                     {
 
-                        logger:m=>{
+                        logger:m => {
 
                             if(
                                 m.status ===
                                 'recognizing text'
                             ){
 
-                                const progresso =
-                                    Math.round(
-                                        (m.progress || 0) *
-                                        100
-                                    );
-
-
                                 status.textContent =
-                                    `OCR ${i+1}/${files.length}: ${progresso}%`;
+                                    `Imagem ${i+1}/${files.length}: OCR ${Math.round((m.progress || 0)*100)}%`;
 
                             }
 
-                        },
-
-                        /*
-                           PSM 6 funciona bem
-                           para blocos de texto.
-                        */
-
-                        tessedit_pageseg_mode:6,
-
-                        preserve_interword_spaces:1
+                        }
 
                     }
-
                 );
 
 
-            const texto =
-                res.data.text || '';
-
-
-            textoTotal +=
-                '\n' +
-                texto +
-                '\n';
-
-
-            /*
-               Extrai as entregas desta imagem.
-            */
-
-            const encontrados =
-                extrairEntregas(
-                    texto
-                );
-
-
-            /*
-               Junta aos resultados anteriores.
-            */
-
-            for(
-                const item of encontrados
-            ){
-
-                const duplicado =
-                    resultados.some(x =>
-
-                        x.nome ===
-                        item.nome &&
-
-                        x.rua ===
-                        item.rua &&
-
-                        x.numero ===
-                        item.numero
-
-                    );
-
-
-                if(!duplicado){
-
-                    resultados.push(
-                        item
-                    );
-
-                }
-
-            }
+            texto +=
+                `\n${res.data.text}\n`;
 
 
             bar.style.width =
-                Math.round(
-                    (
-                        (i+1) /
-                        files.length
-                    ) * 100
-                ) + '%';
+                `${Math.round((i+1)/files.length*100)}%`;
 
         }
 
 
         raw.textContent =
-            textoTotal.trim() ||
+            texto.trim() ||
             'OCR não encontrou texto.';
+
+
+        /*
+            Separa as entregas.
+        */
+
+        const blocos =
+            separarPedidos(texto);
+
+
+        /*
+            Faz o parser de cada entrega.
+        */
+
+        resultados =
+            blocos
+            .map(extractOrder)
+            .filter(
+                x =>
+                    x.pedido ||
+                    x.nome ||
+                    x.rua
+            );
 
 
         renumerar();
@@ -2445,10 +2259,10 @@ async function processarImagens(){
             `Concluído: ${resultados.length} entrega(s) encontrada(s).`;
 
 
-    }catch(e){
+    }
+    catch(e){
 
         console.error(e);
-
 
         status.textContent =
             'Erro no OCR: ' +
@@ -2460,8 +2274,9 @@ async function processarImagens(){
 
 
 /* =========================================================
-   RENUMERAR
+   ID SEQUENCIAL
 ========================================================= */
+
 
 function renumerar(){
 
@@ -2474,20 +2289,17 @@ function renumerar(){
 
 
 /* =========================================================
-   CLASSE DE CONFIANÇA
+   CORES DE CONFIANÇA
 ========================================================= */
 
-function classeConf(conf){
 
-    if(conf === 'alta'){
-        return 'conf-high';
-    }
+function classeConf(c){
 
-    if(conf === 'media'){
-        return 'conf-medium';
-    }
-
-    return 'conf-low';
+    return c === 'alta'
+        ? 'conf-high'
+        : c === 'media'
+            ? 'conf-medium'
+            : 'conf-low';
 
 }
 
@@ -2496,12 +2308,11 @@ function classeConf(conf){
    MOSTRAR RESULTADOS
 ========================================================= */
 
+
 function mostrarResultados(){
 
     const tbody =
-        document.getElementById(
-            'tbody'
-        );
+        document.getElementById('tbody');
 
 
     tbody.innerHTML = '';
@@ -2513,41 +2324,35 @@ function mostrarResultados(){
 
 
     resultados.forEach(
-        (x,idx)=>{
+        (x,idx) => {
+
 
             const tr =
-                document.createElement(
-                    'tr'
-                );
+                document.createElement('tr');
 
 
             /*
-               ID
+                ID
             */
 
             const id =
-                document.createElement(
-                    'td'
-                );
-
+                document.createElement('td');
 
             id.className =
                 'idcell';
 
-
             id.textContent =
                 x.id;
-
 
             tr.appendChild(id);
 
 
             /*
-               Campos.
+                Campos
             */
 
             [
-
+                'pedido',
                 'nome',
                 'rua',
                 'numero',
@@ -2555,20 +2360,18 @@ function mostrarResultados(){
                 'bairro',
                 'cidade',
                 'uf',
-                'cep'
+                'cep',
+                'dataHora'
 
-            ].forEach(c=>{
+            ].forEach(c => {
+
 
                 const td =
-                    document.createElement(
-                        'td'
-                    );
+                    document.createElement('td');
 
 
                 const input =
-                    document.createElement(
-                        'input'
-                    );
+                    document.createElement('input');
 
 
                 input.value =
@@ -2589,59 +2392,48 @@ function mostrarResultados(){
                     );
 
 
-                input.addEventListener(
-                    'input',
-                    ()=>{
+                input.oninput =
+                    () => {
+
                         x[c] =
                             input.value;
-                    }
-                );
+
+                    };
 
 
-                td.appendChild(
-                    input
-                );
+                td.appendChild(input);
 
-
-                tr.appendChild(
-                    td
-                );
+                tr.appendChild(td);
 
             });
 
 
             /*
-               Botão excluir.
+                Excluir
             */
 
             const action =
-                document.createElement(
-                    'td'
-                );
+                document.createElement('td');
 
 
             const del =
-                document.createElement(
-                    'button'
-                );
+                document.createElement('button');
 
 
             del.textContent =
                 'Excluir';
-
 
             del.className =
                 'danger';
 
 
             del.onclick =
-                ()=>{
+                () => {
 
                     resultados.splice(
                         idx,
                         1
                     );
-
 
                     renumerar();
 
@@ -2650,31 +2442,23 @@ function mostrarResultados(){
                 };
 
 
-            action.appendChild(
-                del
-            );
+            action.appendChild(del);
+
+            tr.appendChild(action);
 
 
-            tr.appendChild(
-                action
-            );
-
-
-            tbody.appendChild(
-                tr
-            );
+            tbody.appendChild(tr);
 
 
             /*
-               Se qualquer campo estiver
-               com baixa confiança,
-               manda para revisão.
+                Estatísticas
             */
 
             const baixa =
                 Object.values(
                     x.confianca
-                ).some(
+                )
+                .some(
                     v =>
                         v === 'baixa'
                 );
@@ -2684,7 +2468,8 @@ function mostrarResultados(){
 
                 revisao++;
 
-            }else{
+            }
+            else{
 
                 alta++;
 
@@ -2694,27 +2479,23 @@ function mostrarResultados(){
     );
 
 
-    document.getElementById(
-        'total'
-    ).textContent =
+    document.getElementById('total')
+        .textContent =
         resultados.length;
 
 
-    document.getElementById(
-        'alta'
-    ).textContent =
+    document.getElementById('alta')
+        .textContent =
         alta;
 
 
-    document.getElementById(
-        'revisao'
-    ).textContent =
+    document.getElementById('revisao')
+        .textContent =
         revisao;
 
 
-    document.getElementById(
-        'excelBtn'
-    ).disabled =
+    document.getElementById('excelBtn')
+        .disabled =
         !resultados.length;
 
 }
@@ -2724,42 +2505,40 @@ function mostrarResultados(){
    EXPORTAR EXCEL
 ========================================================= */
 
+
 function exportarExcel(){
 
     if(!resultados.length){
+
         return;
+
     }
 
 
     const rows =
-        resultados.map(x=>({
+        resultados.map(x => ({
 
-            ID:
-                x.id,
+            ID:x.id,
 
-            Nome:
-                x.nome,
+            Pedido:x.pedido,
 
-            Rua:
-                x.rua,
+            Nome:x.nome,
 
-            Número:
-                x.numero,
+            Rua:x.rua,
 
-            Complemento:
-                x.complemento,
+            Número:x.numero,
 
-            Bairro:
-                x.bairro,
+            Complemento:x.complemento,
 
-            Cidade:
-                x.cidade,
+            Bairro:x.bairro,
 
-            UF:
-                x.uf,
+            Cidade:x.cidade,
 
-            CEP:
-                x.cep
+            UF:x.uf,
+
+            CEP:x.cep,
+
+            'Data/Hora':x.dataHora
 
         }));
 
@@ -2773,14 +2552,16 @@ function exportarExcel(){
     ws['!cols'] = [
 
         {wch:6},
-        {wch:32},
-        {wch:35},
+        {wch:20},
+        {wch:28},
+        {wch:30},
         {wch:10},
-        {wch:25},
-        {wch:25},
+        {wch:22},
         {wch:24},
+        {wch:22},
         {wch:7},
-        {wch:12}
+        {wch:12},
+        {wch:20}
 
     ];
 
@@ -2805,20 +2586,34 @@ function exportarExcel(){
 
 
 /* =========================================================
-   EXEMPLO
+   EXEMPLO DE TESTE
 ========================================================= */
+
+
+/*
+    Aqui coloquei propositalmente diferentes ordens
+    de informação para testar o novo parser.
+*/
+
 
 function carregarExemplo(){
 
     const exemplo = `
 
+999881830322368
+
 Natasha Santana
 
-Rua atugasmin medici filho MIAMI PAULISTA
+Rua atugasm in medici filho MIAMI
 
-São Paulo SP 11 Casa
+PAULISTA São Paulo SP 11 Casa
 
 04952020
+
+2026-08-27 07:38:16
+
+
+999881803870288
 
 Júlio Almeida
 
@@ -2828,27 +2623,32 @@ São Paulo SP 14 casa
 
 04952040
 
+2026-08-27 07:38:16
+
+
+999881781535938
+
 Daniela Teixeira dos santos
 
-Rua Basilio Ramos MIAMI PAULISTA
+Rua Basílio Ramos MIAMI PAULISTA
 
 São Paulo SP 16 Casa 16 A
 
 04952040
 
+2026-08-27 07:38:16
+
 `;
 
 
-    document.getElementById(
-        'raw'
-    ).textContent =
+    document.getElementById('raw')
+        .textContent =
         exemplo;
 
 
     resultados =
-        extrairEntregas(
-            exemplo
-        );
+        separarPedidos(exemplo)
+        .map(extractOrder);
 
 
     renumerar();
@@ -2856,10 +2656,11 @@ São Paulo SP 16 Casa 16 A
     mostrarResultados();
 
 
-    document.getElementById(
-        'status'
-    ).textContent =
-        `Exemplo carregado. ${resultados.length} entrega(s) encontrada(s).`;
+    document.getElementById('status')
+        .textContent =
+        'Exemplo carregado. IDs de 1 a ' +
+        resultados.length +
+        ' criados.';
 
 }
 
@@ -2868,74 +2669,64 @@ São Paulo SP 16 Casa 16 A
    LIMPAR
 ========================================================= */
 
+
 function limparTudo(){
 
     resultados = [];
 
 
-    document.getElementById(
-        'tbody'
-    ).innerHTML = '';
+    document.getElementById('tbody')
+        .innerHTML = '';
 
 
-    document.getElementById(
-        'raw'
-    ).textContent =
+    document.getElementById('raw')
+        .textContent =
         'Ainda não há texto.';
 
 
-    document.getElementById(
-        'thumbs'
-    ).innerHTML = '';
+    document.getElementById('thumbs')
+        .innerHTML = '';
 
 
-    document.getElementById(
-        'bar'
-    ).style.width =
+    document.getElementById('bar')
+        .style.width =
         '0%';
 
 
-    document.getElementById(
-        'status'
-    ).textContent =
+    document.getElementById('status')
+        .textContent =
         'Tudo limpo.';
 
 
-    document.getElementById(
-        'total'
-    ).textContent =
+    document.getElementById('total')
+        .textContent =
         '0';
 
 
-    document.getElementById(
-        'alta'
-    ).textContent =
+    document.getElementById('alta')
+        .textContent =
         '0';
 
 
-    document.getElementById(
-        'revisao'
-    ).textContent =
+    document.getElementById('revisao')
+        .textContent =
         '0';
 
 
-    document.getElementById(
-        'excelBtn'
-    ).disabled =
+    document.getElementById('excelBtn')
+        .disabled =
         true;
 
 
-    document.getElementById(
-        'images'
-    ).value =
-        '';
+    document.getElementById('images')
+        .value = '';
 
 }
 
 
-/* =========================================================
-   INICIAR
-========================================================= */
+/*
+    Carrega o exemplo ao abrir.
+*/
 
 carregarExemplo();
 
