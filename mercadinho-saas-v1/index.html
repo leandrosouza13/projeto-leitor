@@ -7,6 +7,39 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <section id="auth-screen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-brand"><span class="brand-mark">MF</span><div><strong>MercadoFlow</strong><small>Estoque e precificação</small></div></div>
+      <div id="auth-entry">
+        <h1 id="auth-heading">Acesse sua conta</h1>
+        <p id="auth-description">Entre para abrir os dados seguros da sua empresa.</p>
+        <form id="auth-form">
+          <label>E-mail<input id="auth-email" type="email" autocomplete="email" required></label>
+          <label>Senha<input id="auth-password" type="password" autocomplete="current-password" minlength="8" required></label>
+          <button id="auth-submit" class="btn primary" type="submit">Entrar</button>
+        </form>
+        <button id="auth-toggle-mode" class="auth-link" type="button">Ainda não tem conta? Criar conta</button>
+      </div>
+      <div id="workspace-setup" hidden>
+        <h1>Crie o espaço da sua empresa</h1>
+        <p>Seus dados ficarão isolados e disponíveis para sua conta.</p>
+        <form id="workspace-create-form">
+          <label>Nome da empresa ou mercadinho<input id="workspace-name" maxlength="160" required placeholder="Ex.: Mercado do Bairro"></label>
+          <label id="local-import-option" class="auth-checkbox" hidden><input id="migrate-local-data" type="checkbox"><span>Migrar os dados que já estão salvos neste navegador</span></label>
+          <button class="btn primary" type="submit">Criar espaço e continuar</button>
+        </form>
+        <button id="auth-signout-setup" class="auth-link" type="button">Sair</button>
+      </div>
+      <div id="workspace-picker" hidden>
+        <h1>Escolha a empresa</h1>
+        <p>Selecione o espaço de trabalho que deseja abrir.</p>
+        <div id="workspace-options" class="workspace-options"></div>
+        <button id="auth-signout-picker" class="auth-link" type="button">Sair</button>
+      </div>
+      <div id="auth-message" class="auth-message" role="status"></div>
+    </div>
+  </section>
+
   <!-- Navegação fixa e identificação da unidade em operação. -->
   <aside class="sidebar">
     <div class="brand">
@@ -51,7 +84,7 @@
         <label class="location-switcher-label" for="location-switcher">Unidade
           <select id="location-switcher" aria-label="Selecionar loja ou estoque"></select>
         </label>
-        <span class="status-dot"><i></i> Dados neste dispositivo</span>
+        <span class="status-dot" id="connection-status"><i></i> Conectando...</span>
         <button class="btn primary" id="quick-product">+ Produto</button>
       </div>
     </header>
@@ -125,6 +158,8 @@
     </section>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,38 @@
+name: Deploy MercadoFlow
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "mercadinho-saas-v1/**"
+      - ".github/workflows/deploy-mercadoflow.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v4
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Preparar arquivos estáticos
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./mercadinho-saas-v1
+      - name: Publicar MercadoFlow
+        id: deployment
+        uses: actions/deploy-pages@v4

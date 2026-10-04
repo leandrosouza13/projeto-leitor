@@ -23,23 +23,23 @@ Protótipo local para receber compras, manter um catálogo único e acompanhar a
 - Atualização do custo e entrada no estoque sem alterar automaticamente o preço de venda
 - Histórico de compra, variação do custo e comparativo por fornecedor
 - Indicadores de custo atual, anterior, menor, maior e médio ponderado no catálogo
-- Registro local de alterações de custo e preço de venda
+- Registro de alterações de custo e preço de venda
 - Link por produto para consultar gráficos de evolução de preço e estoque, além das movimentações detalhadas
 - Busca e paginação nas listas extensas de produtos, precificação, abastecimento e estoque central; históricos detalhados de produto também são paginados
 - Importação de produtos por CSV
 - Importação de planograma em Excel/CSV, com prévia, seleção dos campos e correspondência por ID, SKU/EAN ou nome exato
-- Persistência local com `localStorage`
+- Cópia local com `localStorage` e sincronização do workspace pelo Supabase
 - Módulos de preço e estoque mantidos como recursos secundários
 
 ## Lojas e estoque central
 
 1. Abra **Lojas** para cadastrar uma unidade. O catálogo de produtos é compartilhado; cada unidade passa a ter seus próprios saldos, custos e preços.
-2. Use o seletor **Unidade** no cabeçalho para mudar o contexto de operação. Vendas, cadastro/edição, abastecimento e históricos ficam associados ao local selecionado.
+2. Use o seletor **Unidade** no cabeçalho para mudar o contexto de operação. Recebimentos, cadastro/edição, abastecimento e históricos ficam associados ao local selecionado.
 3. No dashboard, escolha **Esta unidade** ou **Consolidado**. A visão consolidada soma os indicadores, mas mostra os saldos de cada loja e do estoque central separadamente.
 4. Em **Receber compra**, escolha se a nota deve abastecer uma loja ou o **Estoque central**.
 5. Em **Estoque central**, escolha produto, quantidade e loja de destino. A transferência reduz o central e aumenta somente o saldo da loja escolhida; não altera os custos nem os preços locais.
 
-As lojas não são excluídas para preservar compras e transferências históricas. O estoque central é um local reservado para distribuição. O registro de vendas e as rotinas de caixa ficam fora do escopo porque já são atendidos pelo sistema de gestão/POS do mercadinho.
+Lojas adicionais podem ser excluídas em **Lojas**; isso remove os registros e o estoque daquele local, mas preserva o catálogo compartilhado. A loja principal e o estoque central são fixos. O registro de vendas e as rotinas de caixa ficam fora do escopo porque já são atendidos pelo sistema de gestão/POS do mercadinho.
 
 ## Organização das telas
 
@@ -69,7 +69,7 @@ Uma correspondência incerta não atualiza o catálogo automaticamente. Produtos
 
 ### Precificação
 
-Na primeira utilização de **Precificação** (ou ao analisar o planograma), configure a margem desejada e os percentuais de impostos, taxas e perdas para a unidade ativa. Depois de configuradas, as regras deixam de aparecer nos fluxos de precificação e planograma; para alterá-las, abra **Configurações** no menu. Os parâmetros ficam separados por unidade neste navegador. Impostos e taxas incidem sobre o preço de venda; perdas são calculadas sobre o custo de compra.
+Na primeira utilização de **Precificação** (ou ao analisar o planograma), configure a margem desejada e os percentuais de impostos, taxas e perdas para a unidade ativa. Depois de configuradas, as regras deixam de aparecer nos fluxos de precificação e planograma; para alterá-las, abra **Configurações** no menu. Os parâmetros ficam separados por unidade no workspace da empresa. Impostos e taxas incidem sobre o preço de venda; perdas são calculadas sobre o custo de compra.
 
 `preço sugerido = custo de compra × (1 + perdas) ÷ (1 − margem − impostos − taxas)`
 
@@ -77,13 +77,13 @@ Se a soma da margem, dos impostos e das taxas for igual ou superior a 100%, a co
 
 ## Como executar
 
-Não precisa instalar nada.
+Não precisa instalar dependências. Para usar a versão conectada, o projeto deve estar publicado em HTTPS ou servido por um servidor web local; abrir `index.html` diretamente como arquivo não funciona com autenticação.
 
-1. Abra a pasta no VS Code.
-2. Abra `index.html` no navegador. A aplicação inicia no dashboard; use o menu lateral para acessar os módulos.
-3. Para OCR de PDF/foto, é necessária conexão à internet para carregar as bibliotecas do navegador.
+1. Execute [`supabase/cloud-schema.sql`](./supabase/cloud-schema.sql) no SQL Editor e configure as URLs de autenticação conforme o [guia do Supabase](./supabase/README.md).
+2. Em desenvolvimento, abra a pasta no VS Code e inicie um servidor local pela extensão **Live Server**; depois acesse o endereço HTTP gerado e entre ou crie uma conta.
+3. Para publicar, habilite GitHub Actions em **Settings → Pages** e envie as alterações para `master`; o workflow publica o app e informa o endereço em **Actions**.
+4. Para OCR de PDF/foto e outros recursos carregados sob demanda, é necessária conexão à internet.
 
-Para uma experiência melhor no VS Code, use a extensão **Live Server**.
 
 ## Importação CSV
 
@@ -101,29 +101,29 @@ Com as regras de preço configuradas, a prévia compara cada produto relacionado
 
 O importador reconhece os cabeçalhos do planograma recebido, incluindo ID do produto, código, descrição, categoria, preço, código de barras, capacidade de mola, mínimo crítico, nível de par, quantidade atual e tipo. O ID externo é guardado para facilitar as próximas atualizações. A correspondência também considera SKU/EAN e, como último recurso, nome exato único; linhas ambíguas ou com identificadores repetidos ficam de fora da aplicação.
 
-Os campos podem ser selecionados individualmente na prévia. A quantidade atual vem desmarcada por padrão, o custo de compra nunca é importado e produtos ausentes no arquivo não são excluídos nem desativados. Alterações no preço de venda e no estoque selecionado são registradas no histórico/auditoria local. O protótipo ainda guarda os dados somente neste navegador.
+Os campos podem ser selecionados individualmente na prévia. A quantidade atual vem desmarcada por padrão, o custo de compra nunca é importado e produtos ausentes no arquivo não são excluídos nem desativados. Alterações no preço de venda e no estoque selecionado são registradas no histórico/auditoria do workspace.
 
 ## Histórico de preços e estoque
 
 Na tela **Produtos**, abra **Ver evolução de preço e estoque** no produto desejado para consultar gráficos e tabelas de movimentações sem aumentar a lista principal. Os gráficos mostram os últimos 40 pontos; as tabelas detalhadas ficam recolhidas e podem ser abertas na mesma janela. Novas entradas de preço identificam valor anterior/novo, custo, margem estimada, origem e operador local. Alterações manuais, recomendações, importações e preço inicial são registradas.
 
-O histórico de estoque registra edições, compras, importações e transferências. Registros antigos de movimentações de venda, criados antes de sua remoção do app, podem continuar visíveis no histórico local para preservar dados existentes. Como os dados são locais, alterações anteriores que não deixaram uma trilha de auditoria não podem ser reconstruídas com precisão; nesses casos, o gráfico começa quando os registros estão disponíveis.
+O histórico de estoque registra edições, compras, importações e transferências no workspace. Movimentações antigas de venda, criadas antes da remoção desse módulo, podem permanecer nos dados históricos para preservar registros existentes. Alterações passadas que não deixaram uma trilha de auditoria não podem ser reconstruídas; nesses casos, os gráficos começam no primeiro registro disponível.
 
 ## Limitações desta versão
 
-Esta é uma aplicação local de validação, não um SaaS multiusuário pronto para produção. Dados estruturados ficam no `localStorage`, e documentos originais no IndexedDB do mesmo navegador. As lojas e os estoques separados existem somente neste navegador; não há sincronização entre dispositivos, backup, autenticação, controle de acesso ou trilha de auditoria no servidor.
+O app usa autenticação Supabase e sincroniza o estado da empresa na nuvem. O `localStorage` continua servindo de cópia local/migração, e documentos antigos guardados no IndexedDB não são copiados automaticamente ao Storage. As operações são protegidas por RLS e controle de revisão, mas mudanças concorrentes no mesmo workspace exigem recarregar a sessão.
 
 ## Banco de dados remoto (Supabase)
 
-O esquema PostgreSQL para guardar lojas, usuários, produtos, fornecedores, notas, itens, documentos, custos, preços e auditoria está preparado em [`supabase/schema.sql`](./supabase/schema.sql). Veja [`supabase/README.md`](./supabase/README.md) para a configuração.
+O app está integrado ao Supabase para autenticação, sincronização do estado do workspace com controle de revisão e armazenamento privado de novos documentos. A configuração pública está em [`supabase-config.js`](./supabase-config.js); a chave `anon`/publishable pode ser pública, desde que RLS esteja ativa. Nunca exponha `service_role`.
 
-**O banco ainda não está conectado a esta aplicação.** Para ligar ao projeto real, é necessário criar o projeto Supabase, executar o SQL, configurar autenticação e implementar a camada de dados. Nenhum dado local será migrado automaticamente. Não compartilhe nem coloque a chave `service_role` no navegador.
+Antes de usar, execute [`supabase/cloud-schema.sql`](./supabase/cloud-schema.sql) no SQL Editor e configure as URLs de autenticação. O arquivo [`supabase/schema.sql`](./supabase/schema.sql) é um esquema legado de referência e não deve ser executado para esta integração. Veja o [guia de configuração](./supabase/README.md).
+
+O estado é salvo como JSON por workspace, limitado a 10 MB; esse desenho permite sincronizar o protótipo, mas não é um modelo relacional otimizado para escala ou colaboração simultânea intensa. Conflitos de revisão são rejeitados para evitar sobrescrita silenciosa. O app pode ser publicado pelo [workflow GitHub Pages](../.github/workflows/deploy-mercadoflow.yml); habilite GitHub Actions como fonte em Settings → Pages.
 
 Ainda não há:
 
-- Conexão da aplicação ao Supabase
-- Login e usuários/permissões
-- Banco de dados compartilhado entre dispositivos ou sincronização das lojas
+- Interface para convidar e administrar membros da equipe
 - Integração direta com TouchPay
 - Validação de XML contra schemas oficiais
 - OCR robusto para todos os layouts e fotos
@@ -131,9 +131,9 @@ Ainda não há:
 
 ## Próxima evolução recomendada
 
-1. Testar com XML e DANFEs reais de fornecedores diferentes e validar a extração/cálculos.
-2. Ajustar o motor de correspondência usando o catálogo real, EAN e códigos de cada fornecedor.
-3. Provisionar o projeto Supabase e validar o modelo multiunidade, autenticação, permissões RLS e armazenamento com usuários de teste.
-4. Implementar e testar a camada remota de dados, migração/importação de dados locais e sincronização concorrente entre dispositivos.
-5. Configurar backups, recuperação, domínio, monitoramento e implantação antes de receber dados comerciais reais.
+1. Executar o esquema cloud no projeto Supabase e validar autenticação, RLS, importação local, sincronização e Storage com contas de teste.
+2. Habilitar GitHub Pages como fonte **GitHub Actions**, configurar Site URL/Redirect URLs e conferir o primeiro deploy.
+3. Testar com XML e DANFEs reais de fornecedores diferentes e validar a extração/cálculos.
+4. Ajustar o motor de correspondência usando o catálogo real, EAN e códigos de cada fornecedor.
+5. Configurar backups, recuperação, domínio e monitoramento antes de receber dados comerciais reais.
 6. Avaliar OCR gerenciado somente se a qualidade local não atender à operação.

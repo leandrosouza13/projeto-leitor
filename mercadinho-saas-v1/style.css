@@ -20,6 +20,31 @@
 body { margin: 0; background: var(--bg); color: var(--text); }
 button, input, select { font: inherit; }
 button { cursor: pointer; }
+body:not(.authenticated) > .sidebar,
+body:not(.authenticated) > .main { display:none; }
+.auth-screen { min-height:100vh; display:grid; place-items:center; padding:24px; background:radial-gradient(circle at top left,#e4f1e9,var(--bg) 56%); }
+.auth-screen[hidden] { display:none; }
+.auth-card { width:min(440px,100%); padding:30px; border:1px solid var(--line); border-radius:16px; background:#fff; box-shadow:var(--shadow); }
+.auth-brand { display:flex; align-items:center; gap:12px; margin-bottom:28px; }
+.auth-brand .brand-mark { flex:none; }
+.auth-brand strong, .auth-brand small { display:block; }
+.auth-brand strong { font-size:16px; }
+.auth-brand small { margin-top:3px; color:var(--muted); font-size:12px; }
+.auth-card h1 { margin:0 0 7px; font-size:22px; }
+.auth-card p { margin:0 0 20px; color:var(--muted); font-size:13px; line-height:1.5; }
+.auth-card form { display:grid; gap:14px; }
+.auth-card label { color:var(--text); font-size:13px; }
+.auth-card input:not([type="checkbox"]) { margin-top:2px; padding:12px; font-size:14px; }
+.auth-card .btn { min-height:42px; font-size:13px; }
+.auth-link { margin-top:15px; padding:4px 0; border:0; background:transparent; color:var(--primary); font-size:13px; font-weight:700; }
+.auth-message { margin-top:16px; color:var(--muted); font-size:12px; line-height:1.5; }
+.auth-message.error { color:var(--danger); }
+.auth-checkbox { display:flex !important; grid-template-columns:auto 1fr; align-items:center; gap:9px !important; font-weight:500 !important; }
+.auth-checkbox input { width:18px; height:18px; margin:0; accent-color:var(--primary); }
+.workspace-options { display:grid; gap:9px; }
+.workspace-options button { min-height:44px; text-align:left; }
+.connection-error { position:fixed; z-index:50; right:16px; bottom:16px; max-width:min(520px,calc(100vw - 32px)); padding:14px; border:1px solid #e9bcbc; border-radius:10px; background:#fff; color:var(--danger); box-shadow:var(--shadow); font-size:12px; }
+.connection-error button { margin-left:10px; }
 /* 2. Navegação lateral, cabeçalho e área de conteúdo. */
 .sidebar {
   width: 245px; position: fixed; inset: 0 auto 0 0; background: #10241a; color: #fff;
@@ -62,6 +87,7 @@ h2 { margin:0; font-size:18px; }
 .top-actions { display:flex; align-items:center; gap:15px; }
 .status-dot { font-size:11px; color:var(--muted); }
 .status-dot i { display:inline-block; width:7px; height:7px; background:#35a86a; border-radius:50%; margin-right:5px; }
+.status-dot.connection-status-error i { background:var(--danger); }
 #app-content { padding:28px 34px 50px; max-width:1450px; }
 .main, #app-content, .grid > *, .dashboard-intro > *, .topbar > * { min-width:0; }
 /* 3. Painéis, indicadores e cartões das telas operacionais. */

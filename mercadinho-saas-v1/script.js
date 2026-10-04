@@ -17,12 +17,24 @@ const seedProducts = [
 
 function daysAgo(n){ const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
 
+const hadSavedLocalData=Boolean(localStorage.getItem(STORAGE_KEY));
 let state = loadData();
 let currentSection = "dashboard";
 let pendingInvoice = null;
 let pendingPlanogramImport = null;
 let invoiceDestinationId = null;
 let dashboardConsolidated = state.settings.dashboardScope==="all";
+const supabaseConfig=window.MERCADOFLOW_SUPABASE_CONFIG||{};
+const supabaseClient=window.supabase?.createClient&&supabaseConfig.url&&supabaseConfig.anonKey
+  ?window.supabase.createClient(supabaseConfig.url,supabaseConfig.anonKey)
+  :null;
+let cloudUser=null;
+let cloudWorkspaceId=null;
+let cloudRevision=0;
+let cloudSaveQueue=Promise.resolve();
+let cloudLastError=null;
+let cloudWriteBlocked=false;
+let authMode="login";
 const listUi={
   products:{query:"",page:0},
   pricing:{query:"",filter:"all",page:0},
@@ -89,7 +101,6 @@ function loadData(){
     const purchase=data.purchases.find(entry=>entry.accessKey===invoice.accessKey);
     invoice.locationId ||= purchase?.locationId||"store-main";
   });
-  if(!saved) saveData(data);
   return data;
 }
 // Persiste os valores da tela no saldo do local que está selecionado.
@@ -111,6 +122,29 @@ function syncActiveLocation(data){
 function saveData(data=state){
   syncActiveLocation(data);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  if(!cloudWorkspaceId) return;
+  const snapshot=JSON.parse(JSON.stringify(data));
+  cloudSaveQueue=cloudSaveQueue.then(async()=>{
+    if(cloudWriteBlocked) return;
+    setConnectionStatus("Sincronizando...");
+    const {data:revision,error}=await supabaseClient.rpc("mercadoflow_save_workspace_state",{
+      target_workspace_id:cloudWorkspaceId,
+      new_state:snapshot,
+      expected_revision:cloudRevision
+    });
+    if(error) throw error;
+    cloudRevision=Number(revision);
+    cloudLastError=null;
+    setConnectionStatus(`Online · ${cloudUser.email||"conta autenticada"}`);
+  }).catch(error=>{
+    cloudWriteBlocked=true;
+    cloudLastError=error instanceof Error?error:new Error("Não foi possível sincronizar os dados.");
+    reportCloudError(cloudLastError);
+  });
+}
+async function flushCloudSave(){
+  await cloudSaveQueue;
+  if(cloudLastError) throw cloudLastError;
 }
 
 const content = document.getElementById("app-content");
@@ -161,9 +195,240 @@ document.getElementById("location-switcher").addEventListener("change",event=>{
   setActiveLocation(event.target.value);
 });
 document.getElementById("quick-product").onclick=()=>openProductModal();
+document.getElementById("auth-toggle-mode").addEventListener("click",()=>{
+  authMode=authMode==="login"?"signup":"login";
+  document.getElementById("auth-heading").textContent=authMode==="login"?"Acesse sua conta":"Crie sua conta";
+  document.getElementById("auth-description").textContent=authMode==="login"
+    ?"Entre para abrir os dados seguros da sua empresa."
+    :"Cadastre seu e-mail e senha para começar.";
+  document.getElementById("auth-password").autocomplete=authMode==="login"?"current-password":"new-password";
+  document.getElementById("auth-submit").textContent=authMode==="login"?"Entrar":"Criar conta";
+  document.getElementById("auth-toggle-mode").textContent=authMode==="login"
+    ?"Ainda não tem conta? Criar conta"
+    :"Já tem conta? Entrar";
+  setAuthMessage("");
+});
+document.getElementById("auth-form").addEventListener("submit",async event=>{
+  event.preventDefault();
+  if(!supabaseClient){
+    setAuthMessage("A integração Supabase não está configurada corretamente.",true);
+    return;
+  }
+  const button=document.getElementById("auth-submit");
+  button.disabled=true;
+  setAuthMessage("Conectando com segurança...");
+  try{
+    const email=document.getElementById("auth-email").value.trim();
+    const password=document.getElementById("auth-password").value;
+    if(authMode==="signup"){
+      const {data,error}=await supabaseClient.auth.signUp({
+        email,password,options:{emailRedirectTo:window.location.href.split("#")[0]}
+      });
+      if(error) throw error;
+      if(data.session) await showUserWorkspaces(data.user);
+      else setAuthMessage("Conta criada. Confira seu e-mail para confirmar o cadastro e depois entre.");
+    }else{
+      const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+      if(error) throw error;
+      await showUserWorkspaces(data.user);
+    }
+  }catch(error){
+    setAuthMessage(error instanceof Error?error.message:"Não foi possível autenticar a conta.",true);
+  }finally{
+    button.disabled=false;
+  }
+});
+document.getElementById("workspace-create-form").addEventListener("submit",async event=>{
+  event.preventDefault();
+  const button=event.currentTarget.querySelector("button[type=submit]");
+  button.disabled=true;
+  setAuthMessage("Criando o espaço de trabalho...");
+  try{
+    const initialState=hadSavedLocalData&&document.getElementById("migrate-local-data").checked
+      ?normalizeWorkspaceState(loadData())
+      :createEmptyWorkspaceState();
+    const {data,error}=await supabaseClient.rpc("mercadoflow_create_workspace",{
+      workspace_name:document.getElementById("workspace-name").value.trim(),
+      initial_state:initialState
+    });
+    if(error) throw error;
+    await openCloudWorkspace(data);
+  }catch(error){
+    setAuthMessage(error instanceof Error?error.message:"Não foi possível criar o espaço.",true);
+  }finally{
+    button.disabled=false;
+  }
+});
+document.getElementById("auth-signout-setup").addEventListener("click",signOutCloudUser);
+document.getElementById("auth-signout-picker").addEventListener("click",signOutCloudUser);
 
 // 3. Acesso aos dados, formatação e cálculos comuns a várias telas.
 function money(v){ return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"}); }
+
+function setConnectionStatus(message){
+  const status=document.getElementById("connection-status");
+  if(status){
+    status.innerHTML=`<i></i> ${esc(message)}`;
+    status.classList.toggle("connection-status-error",message.startsWith("Falha"));
+  }
+}
+function setAuthMessage(message,isError=false){
+  const target=document.getElementById("auth-message");
+  target.textContent=message;
+  target.classList.toggle("error",isError);
+}
+function reportCloudError(error){
+  setConnectionStatus("Falha de sincronização");
+  let notice=document.getElementById("connection-error");
+  if(!notice){
+    notice=document.createElement("div");
+    notice.id="connection-error";
+    notice.className="connection-error";
+    document.body.appendChild(notice);
+  }
+  notice.textContent=`Não foi possível salvar os dados na nuvem: ${error.message}`;
+  const reload=document.createElement("button");
+  reload.type="button";reload.className="btn small";reload.textContent="Recarregar dados";
+  reload.addEventListener("click",()=>window.location.reload());
+  notice.append(" ",reload);
+}
+function showAuthStage(stage){
+  ["auth-entry","workspace-setup","workspace-picker"].forEach(id=>{
+    document.getElementById(id).hidden=id!==stage;
+  });
+  document.getElementById("auth-screen").hidden=false;
+  document.body.classList.remove("authenticated");
+}
+function createEmptyWorkspaceState(){
+  return {
+    products:[],sales:[],invoices:[],purchases:[],costHistory:[],priceHistory:[],
+    auditLog:[],transfers:[],locations:DEFAULT_LOCATIONS.map(location=>({...location})),
+    settings:{targetMargin:DEFAULT_TARGET_MARGIN,activeLocationId:"store-main",dashboardScope:"location",centralInventoryEnabled:false}
+  };
+}
+function normalizeWorkspaceState(data){
+  const normalized=data&&typeof data==="object"?data:createEmptyWorkspaceState();
+  normalized.products||=[];
+  normalized.sales||=[];
+  normalized.invoices||=[];
+  normalized.purchases||=[];
+  normalized.costHistory||=[];
+  normalized.priceHistory||=[];
+  normalized.auditLog||=[];
+  normalized.transfers||=[];
+  normalized.settings||={};
+  normalized.locations||=DEFAULT_LOCATIONS.map(location=>({...location}));
+  if(!normalized.locations.some(location=>location.id==="store-main")) normalized.locations.unshift({...DEFAULT_LOCATIONS[0]});
+  if(!normalized.locations.some(location=>location.id==="warehouse-central")) normalized.locations.push({...DEFAULT_LOCATIONS[1]});
+  normalized.settings.targetMargin??=DEFAULT_TARGET_MARGIN;
+  normalized.settings.centralInventoryEnabled??=false;
+  normalized.settings.activeLocationId||="store-main";
+  if(!normalized.locations.some(location=>location.id===normalized.settings.activeLocationId)) normalized.settings.activeLocationId="store-main";
+  normalized.settings.dashboardScope||="location";
+  normalized.products.forEach(product=>{
+    const legacyValues=Object.fromEntries(LOCATION_FIELDS.map(field=>[field,Number(product[field]||0)]));
+    product.inventoryByLocation||={[normalized.settings.activeLocationId]:legacyValues};
+    normalized.locations.forEach(location=>{
+      product.inventoryByLocation[location.id]||={...legacyValues,stock:location.id===normalized.settings.activeLocationId?legacyValues.stock:0};
+    });
+    Object.assign(product,product.inventoryByLocation[normalized.settings.activeLocationId]);
+  });
+  normalized.purchases.forEach(purchase=>{purchase.locationId||=purchase.storeId==="default-store"?"store-main":purchase.storeId||"store-main";});
+  normalized.priceHistory.forEach(entry=>{entry.locationId||="store-main";});
+  normalized.costHistory.forEach(entry=>{entry.locationId||="store-main";});
+  normalized.auditLog.forEach(entry=>{entry.locationId||="store-main";});
+  normalized.invoices.forEach(invoice=>{
+    const purchase=normalized.purchases.find(entry=>entry.accessKey===invoice.accessKey);
+    invoice.locationId||=purchase?.locationId||"store-main";
+  });
+  return normalized;
+}
+async function showUserWorkspaces(user){
+  cloudUser=user;
+  const {data:memberships,error:membershipError}=await supabaseClient
+    .from("mercadoflow_workspace_members").select("workspace_id,role").eq("user_id",user.id);
+  if(membershipError) throw membershipError;
+  if(!memberships.length){
+    document.getElementById("local-import-option").hidden=!hadSavedLocalData;
+    showAuthStage("workspace-setup");
+    setAuthMessage("");
+    return;
+  }
+  const workspaceIds=memberships.map(membership=>membership.workspace_id);
+  const {data:workspaces,error:workspaceError}=await supabaseClient
+    .from("mercadoflow_workspaces").select("id,name").in("id",workspaceIds).order("name");
+  if(workspaceError) throw workspaceError;
+  if(workspaces.length===1){
+    await openCloudWorkspace(workspaces[0].id);
+    return;
+  }
+  const options=document.getElementById("workspace-options");
+  options.replaceChildren(...workspaces.map(workspace=>{
+    const button=document.createElement("button");
+    button.type="button";button.className="btn";button.textContent=workspace.name;
+    button.addEventListener("click",()=>openCloudWorkspace(workspace.id));
+    return button;
+  }));
+  showAuthStage("workspace-picker");
+  setAuthMessage("");
+}
+async function openCloudWorkspace(workspaceId){
+  setAuthMessage("Carregando os dados da empresa...");
+  try{
+    const {data,error}=await supabaseClient.from("mercadoflow_workspace_state")
+      .select("state,revision").eq("workspace_id",workspaceId).single();
+    if(error) throw error;
+    state=normalizeWorkspaceState(data.state);
+    cloudWorkspaceId=workspaceId;
+    cloudRevision=Number(data.revision);
+    cloudWriteBlocked=false;
+    cloudLastError=null;
+    dashboardConsolidated=state.settings.dashboardScope==="all";
+    invoiceDestinationId=state.settings.activeLocationId;
+    applyLocationView(activeLocationId());
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    document.body.classList.add("authenticated");
+    document.getElementById("auth-screen").hidden=true;
+    setConnectionStatus(`Online · ${cloudUser.email||"conta autenticada"}`);
+    render();
+  }catch(error){
+    setAuthMessage(error instanceof Error?error.message:"Não foi possível abrir este espaço de trabalho.",true);
+  }
+}
+async function signOutCloudUser(){
+  try{
+    const {error}=await supabaseClient.auth.signOut();
+    if(error) throw error;
+    cloudWorkspaceId=null;cloudUser=null;
+    showAuthStage("auth-entry");
+    setAuthMessage("");
+  }catch(error){
+    setAuthMessage(error instanceof Error?error.message:"Não foi possível sair da conta.",true);
+  }
+}
+async function initializeCloudApp(){
+  if(!supabaseClient){
+    showAuthStage("auth-entry");
+    setAuthMessage("A configuração pública do Supabase não foi carregada. Verifique supabase-config.js e a conexão com a internet.",true);
+    return;
+  }
+  setConnectionStatus("Conectando...");
+  try{
+    const {data,error}=await supabaseClient.auth.getSession();
+    if(error) throw error;
+    if(data.session){
+      await showUserWorkspaces(data.session.user);
+    }else{
+      showAuthStage("auth-entry");
+      setAuthMessage("");
+      setConnectionStatus("Aguardando acesso");
+    }
+  }catch(error){
+    showAuthStage("auth-entry");
+    setAuthMessage(error instanceof Error?error.message:"Falha ao conectar ao Supabase.",true);
+    setConnectionStatus("Falha de conexão");
+  }
+}
 function productById(id){ return state.products.find(p=>p.id===id); }
 function activeLocationId(){ return state.settings.activeLocationId; }
 function activeLocation(){ return state.locations.find(location=>location.id===activeLocationId())||state.locations[0]; }
@@ -748,12 +1013,6 @@ async function deleteLocation(locationId){
   const removedPurchases=state.purchases.filter(purchase=>purchase.locationId===locationId||purchase.storeId===locationId);
   const removedInvoices=state.invoices.filter(invoice=>invoice.locationId===locationId);
   const documentKeys=[...new Set([...removedPurchases,...removedInvoices].map(record=>record.accessKey||record.documentId).filter(Boolean))];
-  try{
-    await deleteInvoiceDocuments(documentKeys);
-  }catch(error){
-    alert(error instanceof Error?`Não foi possível excluir os documentos da loja: ${error.message}`:"Não foi possível excluir os documentos da loja.");
-    return;
-  }
 
   const activeLocationWillBeRemoved=activeLocationId()===locationId;
   const nextState={
@@ -780,10 +1039,13 @@ async function deleteLocation(locationId){
   };
   try{
     saveData(nextState);
+    await flushCloudSave();
   }catch(error){
     alert(error instanceof Error?`Não foi possível salvar a exclusão da loja: ${error.message}`:"Não foi possível salvar a exclusão da loja.");
     return;
   }
+  try{ await deleteInvoiceDocuments(documentKeys); }
+  catch(error){alert(`A loja foi removida, mas não foi possível limpar alguns documentos originais: ${error instanceof Error?error.message:"falha desconhecida"}.`);}
   state=nextState;
   render();
 }
@@ -792,13 +1054,6 @@ async function deleteLocation(locationId){
 async function clearAllRecords(){
   if(!confirm("Apagar todos os produtos e registros de todas as lojas? As lojas cadastradas e suas configurações serão mantidas. Esta ação não pode ser desfeita.")) return;
   if(prompt('Para confirmar, digite "APAGAR TUDO".')!=="APAGAR TUDO") return;
-
-  try{
-    await deleteInvoiceDocuments([],true);
-  }catch(error){
-    alert(error instanceof Error?`Não foi possível apagar os documentos: ${error.message}`:"Não foi possível apagar os documentos.");
-    return;
-  }
 
   const clearedState={
     ...state,
@@ -813,13 +1068,19 @@ async function clearAllRecords(){
   };
   try{
     saveData(clearedState);
+    await flushCloudSave();
   }catch(error){
-    alert(error instanceof Error?`Os documentos foram removidos, mas não foi possível salvar a limpeza dos registros: ${error.message}`:"Os documentos foram removidos, mas não foi possível salvar a limpeza dos registros.");
+    alert(error instanceof Error?`Não foi possível salvar a limpeza dos registros: ${error.message}`:"Não foi possível salvar a limpeza dos registros.");
     return;
   }
+  let documentCleanupError=null;
+  try{ await deleteInvoiceDocuments([],true); }
+  catch(error){documentCleanupError=error;}
   state=clearedState;
   render();
-  alert("Todos os registros e produtos foram apagados. As lojas e configurações foram mantidas.");
+  alert(documentCleanupError
+    ?`Os registros foram apagados, mas alguns documentos originais não puderam ser removidos: ${documentCleanupError instanceof Error?documentCleanupError.message:"falha desconhecida"}.`
+    :"Todos os registros e produtos foram apagados. As lojas e configurações foram mantidas.");
 }
 
 // 6. Operações opcionais de estoque central e transferências entre unidades.
@@ -1823,15 +2084,19 @@ async function confirmInvoiceImport(){
     nextState.auditLog.push({id:`a${Date.now()}${Math.random()}`,entity:"product",entityId:product.id,field:"stock",previousValue:previousStock,newValue:inventory.stock,date:now,user:"Operador local",source:`NF ${invoice.number||invoice.accessKey}`,locationId:destinationId});
   }
   const totalValue=Number(invoice.totalValue)||purchaseItems.reduce((sum,item)=>sum+item.totalCost,0);
-  const purchase={id:`b${Date.now()}${Math.random()}`,storeId:destinationId,locationId:destinationId,supplier:invoice.supplier,supplierCnpj:invoice.supplierCnpj||"",number:invoice.number||"",series:invoice.series||"",accessKey:invoice.accessKey,issueDate:invoice.date,entryDate:daysAgo(0),recordedAt:now,totalValue,source:invoice.source,documentId:invoice.accessKey,documentName:invoice.document.name,documentType:invoice.document.type,importedBy:"Operador local",items:purchaseItems};
+  const purchase={id:`b${Date.now()}${Math.random()}`,storeId:destinationId,locationId:destinationId,supplier:invoice.supplier,supplierCnpj:invoice.supplierCnpj||"",number:invoice.number||"",series:invoice.series||"",accessKey:invoice.accessKey,issueDate:invoice.date,entryDate:daysAgo(0),recordedAt:now,totalValue,source:invoice.source,documentId:invoice.accessKey,documentName:invoice.document.name,documentType:invoice.document.type,documentPath:invoiceDocumentPath(invoice.accessKey,invoice.document.name),importedBy:"Operador local",items:purchaseItems};
   nextState.purchases.push(purchase);
   nextState.costHistory.push(...historyEntries);
   nextState.invoices.push({accessKey:invoice.accessKey,number:invoice.number,series:invoice.series||"",date:invoice.date,supplier:invoice.supplier,supplierCnpj:invoice.supplierCnpj||"",itemCount:purchaseItems.length,totalValue,importedAt:now,documentId:invoice.accessKey,locationId:destinationId});
   try{
     await storeInvoiceDocument(invoice.accessKey,invoice.document);
     saveData(nextState);
+    await flushCloudSave();
   }catch(error){
-    setInvoiceMessage(error instanceof Error?`Não foi possível registrar a compra com segurança: ${error.message}`:"Falha ao salvar a compra. Nenhuma atualização foi aplicada.",true);
+    let message=error instanceof Error?error.message:"Falha ao salvar a compra.";
+    try{ await deleteCloudInvoiceDocument(invoiceDocumentPath(invoice.accessKey,invoice.document.name)); }
+    catch(cleanupError){message+=` O documento também não pôde ser removido: ${cleanupError instanceof Error?cleanupError.message:"falha desconhecida"}.`;}
+    setInvoiceMessage(`Não foi possível registrar a compra com segurança: ${message}`,true);
     updateInvoiceConfirmButton();return;
   }
   state=nextState;
@@ -1851,17 +2116,41 @@ function invoiceDocumentDb(){
   });
 }
 async function storeInvoiceDocument(accessKey,document){
-  const db=await invoiceDocumentDb();
-  return new Promise((resolve,reject)=>{
-    const transaction=db.transaction("invoices","readwrite");
-    transaction.objectStore("invoices").put({accessKey,name:document.name,type:document.type,blob:document.blob,savedAt:new Date().toISOString()});
-    transaction.oncomplete=()=>{db.close();resolve();};
-    transaction.onerror=()=>{const error=transaction.error||new Error("Falha ao guardar o documento original.");db.close();reject(error);};
-    transaction.onabort=()=>{const error=transaction.error||new Error("Armazenamento do documento cancelado.");db.close();reject(error);};
+  const path=invoiceDocumentPath(accessKey,document.name);
+  const {error}=await supabaseClient.storage.from("mercadoflow-documents").upload(path,document.blob,{
+    contentType:invoiceDocumentMime(document.name,document.type),upsert:true
   });
+  if(error) throw error;
+}
+function invoiceDocumentPath(accessKey,fileName){
+  const safeName=String(fileName||"documento").normalize("NFKD").replace(/[^\w.-]+/g,"_").slice(0,120)||"documento";
+  return `${cloudWorkspaceId}/${accessKey}/${safeName}`;
+}
+function invoiceDocumentMime(fileName,providedType){
+  if(providedType) return providedType;
+  const extension=String(fileName||"").split(".").pop().toLocaleLowerCase("pt-BR");
+  return ({xml:"application/xml",pdf:"application/pdf",png:"image/png",jpg:"image/jpeg",jpeg:"image/jpeg",webp:"image/webp"})[extension]||"application/octet-stream";
+}
+async function deleteCloudInvoiceDocument(path){
+  if(!path||!cloudWorkspaceId) return;
+  if(!path.startsWith(`${cloudWorkspaceId}/`)) throw new Error("O documento não pertence ao espaço de trabalho ativo.");
+  const {error}=await supabaseClient.storage.from("mercadoflow-documents").remove([path]);
+  if(error) throw error;
 }
 // Remove documentos associados à unidade ou todos, quando a operação pede limpeza total.
 async function deleteInvoiceDocuments(accessKeys,clearAll=false){
+  if(cloudWorkspaceId){
+    const keys=new Set(accessKeys);
+    const paths=state.purchases
+      .filter(purchase=>clearAll||keys.has(purchase.accessKey))
+      .map(purchase=>purchase.documentPath)
+      .filter(path=>path&&path.startsWith(`${cloudWorkspaceId}/`));
+    if(paths.length){
+      const {error}=await supabaseClient.storage.from("mercadoflow-documents").remove(paths);
+      if(error) throw error;
+    }
+    return;
+  }
   if(!clearAll&&!accessKeys.length) return;
   const db=await invoiceDocumentDb();
   return new Promise((resolve,reject)=>{
@@ -1884,6 +2173,17 @@ async function deleteInvoiceDocuments(accessKeys,clearAll=false){
 }
 async function downloadInvoiceDocument(accessKey){
   try{
+    const purchase=state.purchases.find(entry=>entry.accessKey===accessKey);
+    if(cloudWorkspaceId&&purchase?.documentPath){
+      if(!purchase.documentPath.startsWith(`${cloudWorkspaceId}/`)) throw new Error("O documento não pertence ao espaço de trabalho ativo.");
+      const {data,error}=await supabaseClient.storage.from("mercadoflow-documents").download(purchase.documentPath);
+      if(error) throw error;
+      const url=URL.createObjectURL(data);
+      const link=document.createElement("a");
+      link.href=url;link.download=purchase.documentName||"documento-fiscal";
+      link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+      return;
+    }
     const db=await invoiceDocumentDb();
     const record=await new Promise((resolve,reject)=>{
       const request=db.transaction("invoices","readonly").objectStore("invoices").get(accessKey);
@@ -2601,4 +2901,4 @@ function goDashboardPlanogram(){
 }
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
 
-render();
+initializeCloudApp();
