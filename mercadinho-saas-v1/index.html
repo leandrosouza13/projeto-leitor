@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MercadoFlow — Gestão da loja</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Navegação fixa e identificação da unidade em operação. -->
+  <aside class="sidebar">
+    <div class="brand">
+      <button class="brand-mark" id="brand-home" type="button" aria-label="MercadoFlow — ir para Visão geral" title="Ir para Visão geral">MF</button>
+      <div>
+        <strong>MercadoFlow</strong>
+        <span>Compras e produtos</span>
+      </div>
+    </div>
+
+    <nav>
+      <button class="nav-item active" data-section="dashboard" aria-label="Visão geral" title="Visão geral">⌂ <span>Visão geral</span></button>
+      <button class="nav-item" data-section="importar" aria-label="Receber compra" title="Receber compra">⇩ <span>Receber compra</span></button>
+      <button class="nav-item" data-section="produtos" aria-label="Produtos" title="Produtos">📦 <span>Produtos</span></button>
+      <button class="nav-item" data-section="compras" aria-label="Abastecimento" title="Abastecimento">↻ <span>Abastecimento</span></button>
+      <button class="nav-item" data-section="central" aria-label="Estoque central" title="Estoque central">▣ <span>Estoque central</span></button>
+      <button class="nav-item" data-section="precificacao" aria-label="Precificação" title="Precificação">◈ <span>Precificação</span></button>
+      <button class="nav-item" data-section="lojas" aria-label="Lojas" title="Lojas">⌂ <span>Lojas</span></button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="store-switcher">
+        <button class="store-chip" id="store-switcher-toggle" type="button" aria-label="Trocar loja" aria-haspopup="true" aria-expanded="false" disabled>
+          <span class="store-icon">🏪</span>
+          <span><strong>MercadoFlow</strong><small id="active-location-name">Loja principal</small></span>
+        </button>
+        <div class="store-switcher-menu" id="store-switcher-menu" role="menu" aria-label="Selecionar loja" hidden></div>
+      </div>
+      <small>Dados separados por local neste navegador</small>
+      <button class="nav-item settings-icon-button" data-section="configuracoes" aria-label="Configurações" title="Configurações">⚙</button>
+    </div>
+  </aside>
+
+  <!-- O cabeçalho é persistente; o conteúdo de cada tela é renderizado pelo script.js. -->
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow" id="page-eyebrow">PAINEL DA LOJA</div>
+        <h1 id="page-title">Receber compra</h1>
+      </div>
+      <div class="top-actions">
+        <label class="location-switcher-label" for="location-switcher">Unidade
+          <select id="location-switcher" aria-label="Selecionar loja ou estoque"></select>
+        </label>
+        <span class="status-dot"><i></i> Dados neste dispositivo</span>
+        <button class="btn primary" id="quick-product">+ Produto</button>
+      </div>
+    </header>
+
+    <div id="app-content"></div>
+  </main>
+
+  <!-- Janela compartilhada para criar ou editar produtos do catálogo. -->
+  <div class="modal hidden" id="product-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div class="eyebrow">CADASTRO</div>
+          <h2 id="modal-title">Novo produto</h2>
+        </div>
+        <button class="icon-btn" data-close-modal>×</button>
+      </div>
+      <form id="product-form">
+        <input type="hidden" id="product-id">
+        <div class="form-grid">
+          <label>Produto
+            <input id="p-name" required placeholder="Ex.: Coca-Cola 350ml">
+          </label>
+          <label>SKU / código
+            <input id="p-sku" placeholder="Ex.: EAN ou SKU">
+          </label>
+          <label>Categoria
+            <input id="p-category" placeholder="Ex.: Bebidas">
+          </label>
+          <label>Fornecedor
+            <input id="p-supplier" placeholder="Ex.: Distribuidora ABC">
+          </label>
+          <label>Custo unitário (R$)
+            <input id="p-cost" type="number" min="0" step="0.01" required>
+          </label>
+          <label>Preço de venda (R$)
+            <input id="p-price" type="number" min="0" step="0.01" required>
+          </label>
+          <label>Estoque atual
+            <input id="p-stock" type="number" min="0" step="1" required>
+          </label>
+          <label>Estoque mínimo
+            <input id="p-min" type="number" min="0" step="1" required>
+          </label>
+          <label>Estoque desejado
+            <input id="p-target" type="number" min="0" step="1" required>
+          </label>
+          <label>Venda média/dia
+            <input id="p-daily" type="number" min="0" step="0.1" required>
+          </label>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn ghost" data-close-modal>Cancelar</button>
+          <button class="btn primary" type="submit">Salvar produto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Janela de evolução do preço e do estoque do produto selecionado. -->
+  <div class="modal hidden" id="product-history-modal" role="dialog" aria-modal="true" aria-labelledby="product-history-title">
+    <section class="modal-card product-history-modal-card">
+      <div class="modal-header">
+        <div>
+          <div class="eyebrow">ACOMPANHAMENTO DO PRODUTO</div>
+          <h2 id="product-history-title">Evolução do produto</h2>
+        </div>
+        <button class="icon-btn" id="close-product-history" aria-label="Fechar histórico">×</button>
+      </div>
+      <div id="product-history-content"></div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
